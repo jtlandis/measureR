@@ -2,11 +2,8 @@
 
 setClass("gram",
          contains = "measure",
-         prototype = list(value = numeric(0),
-                          type = weight(),
-                          prefix = "",
-                          unit = "g",
-                          scale_factor = 1))
+         prototype = list(type = weight(),
+                          unit = "g"))
 
 setGeneric("gram", valueClass = "gram", function(object) standardGeneric("gram"))
 setMethod("gram", signature("missing"), function(object) new("gram"))

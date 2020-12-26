@@ -1,14 +1,24 @@
 
-measure <- setClass("measure", representation(value = "numeric",
-                                              type = "unit_type",
-                                              unit = "character"))
+measure <- setClass("measure", slots = c(value = "numeric",
+                                         type = "unit_type",
+                                         unit = "character",
+                                         prefix = "character",
+                                         scale_factor = "numeric"),
+                    prototype = list(value = numeric(0),
+                                     unit = NA_character_,
+                                     prefix = "",
+                                     scale_factor = 1))
 
 setMethod("show", "measure",
           function(object){
-            cat("measure: ", class(object@type), "\n", sep = "")
-            if(length(object@value)>12){
-              cat(head(object@value), "...", tail(object@value), object@unit, sep = " ")
-            } else {
-              cat(object@value, object@unit, sep = " ")
-            }
+            o_unit <- paste0(object@prefix, object@unit)
+            cat("measure: ", class(object@type), " (",o_unit,")", "\n", sep = "")
+            print(object@value)
+            cat("\n")
+          })
+
+setMethod("head", "measure",
+          function(x, ...){
+            x@value <- head(x@value, ...)
+            x
           })
