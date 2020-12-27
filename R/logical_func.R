@@ -1,5 +1,5 @@
 
-is_measure <- function(x) inherits(x, "measure")
+is_Measure <- function(x) inherits(x, "Measure")
 
 is_Weight <- function(x) UseMethod("is_Weight", x)
 is_Weight.default <- function(x) inherits(x, "Weight")
