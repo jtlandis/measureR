@@ -1,23 +1,52 @@
 
-measure <- setClass("measure", slots = c(value = "numeric",
-                                         weight = "weight",
-                                         distance = "distance",
-                                         time = "time",
-                                         temperature = "temperature"),
-                    prototype = list(value = numeric(0),
-                                     weight = weight(),
-                                     distance = distance(),
-                                     time = time(),
-                                     temperature = temperature()))
+measure <- setClass("Measure", slots = c(value = "numeric",
+                                         Weight = "Weight",
+                                         Distance = "Distance",
+                                         Time = "Time",
+                                         Temperature = "Temperature"))
+setMethod("initialize", "Measure",
+          function(.Object, value = numeric(0),
+                   Weight,
+                   Distance,
+                   Time,
+                   Temperature,
+                   ...){
+            .Object@value <- value
+            .Object@Weight <- Weight %missing% weight()
+            .Object@Distance <- Distance %missing% distance()
+            .Object@Time <- Time %missing% time()
+            .Object@Temperature <- Temperature %missing% temperature()
+            validObject(.Object)
+            .Object
+          })
 
-setMethod("show", "measure",
+setValidity("Measure",
+            function(object){
+              the_slots <- getUnitSlots(object)
+              er <- character(0)
+              # if(length(the_slots)==0){
+              #   er <- c(er, "At least one Unit_type must be active")
+              # }
+              if(!is_Weight(object@Weight)){
+                er <- c(er, "Weight slot must contain Unit_type that contains Weight Class")
+              }
+              if(!is_Distance(object@Distance)){
+                er <- c(er, "Distance slot must contain Unit_type that contains Distance Class")
+              }
+              if(!is_Time(object@Time)){
+                er <- c(er, "Time slot must contain Unit_type that contains Time Class")
+              }
+              if(!is_Temperature(object@Temperature)){
+                er <- c(er, "Temperature slot must contain Unit_type that contains Temperature Class")
+              }
+              if(length(er)>0) return(er)
+              TRUE
+            })
+
+
+setMethod("show", "Measure",
           function(object){
-            unit_l <- getUnitSlots(object)
-            o_unit <- vapply(unit_l, function(x){ paste0(getUnit(x),ifelse(abs(x@power)==1, "", paste0("^",abs(x@power))))}, FUN.VALUE = character(1))
-            numerator <- vapply(unit_l, FUN = function(x) x@power>0, FUN.VALUE = logical(1))
-            numer_ <- ifelse(sum(numerator)>0, paste0("(",o_unit[numerator],")", collapse = "*"), "1")
-            denom_ <- ifelse(sum(!numerator)>0,paste0("/",paste0("(",o_unit[!numerator],")",collapse = "*")), "")
-            the_unit <- paste0(numer_, denom_)
+            the_unit <- getUnit(object)
             cat("measure: ",
                 #class(object@type),
                 " ", the_unit, "\n", sep = "")
@@ -25,14 +54,12 @@ setMethod("show", "measure",
             cat("\n")
           })
 
-setMethod("head", "measure",
-          function(x, ...){
-            x@value <- head(x@value, ...)
-            x
-          })
+head.measure <- function(x, ...){
+  x@value <- head(x@value, ...)
+  x
+}
+tail.measure <- function(x, ...){
+  x@value <- tail(x@value, ...)
+  x
+}
 
-setMethod("head", "measure",
-          function(x, ...){
-            x@value <- tail(x@value, ...)
-            x
-          })
