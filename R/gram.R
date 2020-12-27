@@ -1,25 +1,31 @@
 #attempt
 
-setClass("gram",
-         contains = "measure",
-         prototype = list(type = weight(),
-                          unit = "g"))
+setClass("Gram",
+         contains = "Weight")
+setMethod("initialize", "Gram",
+          function(.Object, prefix = "", ...) {
+            .Object <- callNextMethod(.Object, prefix = prefix, ...)
+            .Object@unit <- "g"
+            .Object
+          })
 
-setGeneric("gram", valueClass = "gram", function(object) standardGeneric("gram"))
-setMethod("gram", signature("missing"), function(object) new("gram"))
-setMethod("gram", signature("numeric"), function(object) new("gram", value = object))
-setMethod("gram", signature("measure"), function(object) convert(object = object, to = gram()))
+setGeneric("gram", valueClass = "Measure", function(object) standardGeneric("gram"))
+setMethod("gram", signature("missing"), function(object) measure(Weight = new("Gram")))
+setMethod("gram", signature("numeric"), function(object) measure(value = object, Weight = new("Gram")))
+setMethod("gram", signature("Measure"), function(object) convert(object = object, to = new("Gram")))
 
 #dagram ----
-setClass("dagram", contains = "gram", prototype = list(value = numeric(0),
-                                                     type = weight(),
-                                                     prefix = "da",
-                                                     unit = "g",
-                                                     scale_factor = 10))
-setGeneric("dagram", valueClass = "dagram", function(object) standardGeneric("dagram"))
-setMethod("dagram", signature("missing"), function(object) new("dagram"))
-setMethod("dagram", signature("numeric"), function(object) new("dagram", value = object))
-setMethod("dagram", signature("measure"), function(object) convert(object = object, to = dagram()))
+setClass("daGram", contains = "Gram")
+setMethod("initialize", "daGram",
+          function(.Object, prefix = "da", ...) {
+            .Object <- callNextMethod(.Object, prefix = prefix, ...)
+            .Object@scale <- 10
+            .Object
+          })
+setGeneric("dagram", valueClass = "Measure", function(object) standardGeneric("dagram"))
+setMethod("dagram", signature("missing"), function(object) measure(Weight = new("daGram")))
+setMethod("dagram", signature("numeric"), function(object) measure(value = object, Weight = new("daGram")))
+setMethod("dagram", signature("Measure"), function(object) convert(object = object, to = new("daGram")))
 
 #hgram ----
 setClass("hgram", contains = "gram", prototype = list(value = numeric(0),
