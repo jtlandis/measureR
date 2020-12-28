@@ -1,11 +1,8 @@
 
 
-setClass("Unit_type", slots = c(unit = "character",
-                                prefix = "character",
-                                scale = "numeric",
-                                power = "numeric"))
+
 setMethod("initialize", "Unit_type",
-          function(.Object, unit = NA_character_, prefix = "", scale = 1, power = 1, ...){
+          function(.Object, unit = NA_character_, prefix = "", scale = 1, power = 0, ...){
             .Object@unit <- unit
             .Object@prefix <- prefix
             .Object@scale <- scale
@@ -13,15 +10,20 @@ setMethod("initialize", "Unit_type",
             .Object
           })
 
+#' @export
 is_active <- function(x) UseMethod("is_active", x)
 is_active.default <- function(x) FALSE
 is_active.Unit_type <- function(x) x@power!=0&&!is.na(x@unit)
 
+setMethod("is_active", "Unit_type", is_active.Unit_type)
+
 setGeneric("getUnitSlots", valueClass = "list", function(object) standardGeneric("getUnitSlots"))
 setMethod("getUnitSlots", signature = "Measure",
           function(object){
-            l_ <- Map(slot, object = list(object), name = slotNames(object))
-            l_ <- l_[vapply(l_, is_active, FUN.VALUE = logical(1))]
+            l_ <- map2(list(object), UnitSlots, slot)
+            logi <- vapply(l_, is_active, FUN.VALUE = logical(1))
+            l_ <- l_[logi]
+            names(l_) <- UnitSlots[logi]
             l_
           })
 
@@ -41,7 +43,4 @@ setMethod("getUnit", signature = "Measure",
             paste0(numer_, denom_)
           })
 
-weight <- setClass("Weight", contains = "Unit_type")
-distance <- setClass("Distance", contains = "Unit_type")
-time <- setClass("Time", contains = "Unit_type")
-temperature <- setClass("Temperature", contains = "Unit_type")
+

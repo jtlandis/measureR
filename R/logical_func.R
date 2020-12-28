@@ -1,21 +1,30 @@
 
+#' @export
 is_Measure <- function(x) inherits(x, "Measure")
 
+#' @export
 is_Weight <- function(x) UseMethod("is_Weight", x)
 is_Weight.default <- function(x) inherits(x, "Weight")
-is_Weight.measure <- function(x) any(vapply(getUnitSlots(x), is_Weight.default, logical(1)))
+is_Weight.Measure <- function(x) any(vapply(getUnitSlots(x), is_Weight.default, logical(1)))
+setMethod("is_Weight", "Measure", is_Weight.Measure)
 
+#' @export
 is_Distance <- function(x) UseMethod("is_Distance", x)
 is_Distance.default <- function(x) inherits(x, "Distance")
-is_Distance.measure <- function(x) any(vapply(getUnitSlots(x), is_Distance.default, logical(1)))
+is_Distance.Measure <- function(x) any(vapply(getUnitSlots(x), is_Distance.default, logical(1)))
+setMethod("is_Distance", "Measure", is_Distance.Measure)
 
+#' @export
 is_Time <- function(x) UseMethod("is_Time", x)
 is_Time.default <- function(x) inherits(x, "Time")
-is_Time.measure <- function(x) any(vapply(getUnitSlots(x), is_Time.default, logical(1)))
+is_Time.Measure <- function(x) any(vapply(getUnitSlots(x), is_Time.default, logical(1)))
+setMethod("is_Time", "Measure", is_Time.Measure)
 
+#' @export
 is_Temperature <- function(x) UseMethod("is_Temperature", x)
 is_Temperature.default <- function(x) inherits(x, "Temperature")
-is_Temperature.measure <- function(x) any(vapply(getUnitSlots(x), is_Temperature.default, logical(1)))
+is_Temperature.Measure <- function(x) any(vapply(getUnitSlots(x), is_Temperature.default, logical(1)))
+setMethod("is_Temperature", "Measure", is_Temperature.Measure)
 
 setGeneric("identical_measures", valueClass = "logical", function(e1, e2) standardGeneric("identical_measures"))
 setMethod("identical_measures",

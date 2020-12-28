@@ -1,3 +1,5 @@
+#' @include unit_types.R
+NULL
 
 measure <- setClass("Measure", slots = c(value = "numeric",
                                          Weight = "Weight",
@@ -12,17 +14,17 @@ setMethod("initialize", "Measure",
                    Temperature,
                    ...){
             .Object@value <- value
-            .Object@Weight <- Weight %missing% weight()
-            .Object@Distance <- Distance %missing% distance()
-            .Object@Time <- Time %missing% time()
-            .Object@Temperature <- Temperature %missing% temperature()
+            .Object@Weight <- Weight %missing% new("Weight")
+            .Object@Distance <- Distance %missing% new("Distance")
+            .Object@Time <- Time %missing% new("Time")
+            .Object@Temperature <- Temperature %missing% new("Temperature")
             validObject(.Object)
             .Object
           })
 
 setValidity("Measure",
             function(object){
-              the_slots <- getUnitSlots(object)
+              #the_slots <- getUnitSlots(object)
               er <- character(0)
               # if(length(the_slots)==0){
               #   er <- c(er, "At least one Unit_type must be active")
