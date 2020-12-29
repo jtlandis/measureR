@@ -84,14 +84,14 @@ setMethod("convert", signature("Measure","Temperature"),
           })
 
 setGeneric("conversion", valueClass = "numeric", function(object, to) standardGeneric("conversion"))
-# setMethod("conversion", signature("Ounce","Gram"),
-#           function(object, to){
-#             (object@scale^object@power)*(28.3495/(to@scale^object@power))
-#           })
-# setMethod("conversion", signature("Gram","Ounce"),
-#           function(object, to){
-#             (object@scale^object@power)*(0.035274/(to@scale^object@power))
-#           })
+setMethod("conversion", signature("Ounce","Gram"),
+          function(object, to){
+            (object@scale^object@power)*(28.3495/(to@scale^object@power))
+          })
+setMethod("conversion", signature("Gram","Ounce"),
+          function(object, to){
+            (object@scale^object@power)*(0.035274/(to@scale^object@power))
+          })
 
 setMethod("conversion", signature("Unit_type", "Unit_type"),
           function(object, to){
