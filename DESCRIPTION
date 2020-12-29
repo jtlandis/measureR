@@ -1,0 +1,25 @@
+Package: measureR
+Type: Package
+Title: A S4 Class for units of measurements
+Version: 0.1.0
+Author: Who wrote it
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: The measureR package provides the user the ability to create numeric vectors that are aware of their measurement units. These objects will behave like normal numeric vectors with standard arethmetic.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    testthat
+RoxygenNote: 7.1.1
+Collate: 
+    'Classes.R'
+    'aaa-base_classes.R'
+    'arithmetic.R'
+    'convert.R'
+    'gram.R'
+    'hello.R'
+    'helpers.R'
+    'logical_func.R'
+    'unit_types.R'
+    'measure.R'
+    'ounce.R'
