@@ -27,6 +27,7 @@ setMethod("getUnitSlots", signature = "Measure",
             l_
           })
 
+#' @export
 setGeneric("getUnit", valueClass = "character", function(object) standardGeneric("getUnit"))
 setMethod("getUnit", signature = "Unit_type",
           function(object){
@@ -42,5 +43,7 @@ setMethod("getUnit", signature = "Measure",
             denom_ <- ifelse(sum(!numerator)>0,paste0("/",paste0("(",o_unit[!numerator],")",collapse = "*")), "")
             paste0(numer_, denom_)
           })
+
+
 
 
