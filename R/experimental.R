@@ -1,10 +1,9 @@
 
 "%missing%" <- function(a,b) if(!missing(a)) a else b
-setClass("Unit", slots = c(power = "numeric"))
-setClass("Weight", contains = "Unit")
-
+setClass("Unit", contains = "character", slots = c(power = "numeric"))
 setMethod("initialize", "Unit",
-          function(.Object, power = 0){
+          function(.Object, .Data = character(), power = 0){
+            .Object@.Data <- .Data
             .Object@power <- power
             .Object
           })
@@ -14,23 +13,9 @@ setMethod("initialize", "System",
             .Object@scale <- scale
             .Object
           })
-
-
-setClass("UnitSystem", contains = "character",
-         slots = c(unit = "Unit",system = "System"))
-setMethod("initialize", "UnitSystem",
-          function(.Object, .Data = character(0), unit, system){
-            .Object@.Data <- .Data
-            .Object@unit <- unit %missing% new("Unit")
-            .Object@system <- system %missing% new("System")
-            .Object
-          })
-
-
 metric_prefix <- c("",
-                  "da","h","k","M","G","T","P","E","Z","Y",
-                  "d","c","m","u","n","p","f","a","z","y")
-
+                   "da","h","k","M","G","T","P","E","Z","Y",
+                   "d","c","m","u","n","p","f","a","z","y")
 setClass("Metric", contains = "System")
 setMethod("initialize", "Metric",
           function(.Object, .Data = "Metric"){
@@ -44,14 +29,31 @@ setMethod("initialize", "Metric",
                                         d = -1L, c = -2L, m = -3L, u = -6L, n = -9L,
                                         p = -12L, f = -15L, a = -18L, z = -21L, y = -24L,
                                         0L
-                                        ))
+            ))
             .Object
           })
 
+setClass("UnitSystem", contains = "Unit",
+         slots = c(system = "System"))
+setMethod("initialize", "UnitSystem",
+          function(.Object, .Data, system){
+            .data <- .Data %missing% new("Unit")
+            .Object@.Data <- .data@.Data
+            .Object@power <- .data@power
+            .Object@system <- system %missing% new("System")
+            .Object
+          })
+
+setClass("Weight", contains = "UnitSystem")
 
 
 
-setClass("Gram_", contains = "UnitSystem")
+
+
+
+
+
+setClass("Gram_", contains = "Weight")
 setMethod("initialize", "Gram_",
           function(.Object, unit = "g"){
             munit <- paste0(metric_prefix,"g")
@@ -60,9 +62,12 @@ setMethod("initialize", "Gram_",
                          " {paste0(\"\\\"\",metric_prefix,\"g\",\"\\\"\", collapse = \", \")}"))
             }
             prefix <- gsub("g$", "", unit)
-            .Object <- callNextMethod(.Object, unit = new("Weight"), system = new("Metric", prefix))
+            .Object <- callNextMethod(.Object, .Data = new("Unit", unit, power = 1), system = new("Metric", prefix))
             .Object
           })
 
-new("Gram_")
+.x <- new("Gram_")
 
+inherits(.x, "Weight")
+inherits(.x, "Unit")
+inherits(.x, "Unit")
