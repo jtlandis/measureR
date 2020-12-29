@@ -58,11 +58,14 @@ setMethod("show", "Measure",
             cat("\n")
           })
 
-head.measure <- function(x, ...){
+#' @export
+head.Measure <- function(x, ...){
   x@.Data <- head(x@.Data, ...)
   x
 }
-tail.measure <- function(x, ...){
+
+#' @export
+tail.Measure <- function(x, ...){
   x@.Data <- tail(x@.Data, ...)
   x
 }
