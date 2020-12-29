@@ -28,10 +28,8 @@ setMethod("convert", signature("Unit_type","Unit_type"),
             if(e1_active&&e2_active&&!identical_measures(object, to)){
               scale <- conversion(object, to) #scale to multiply against e1@.Data
             }
-            object@unit <- to@unit
-            object@prefix <- to@prefix
-            object@scale <- to@scale
-            return(list(object, scale))
+            to@power <- object@power
+            return(list(to, scale))
           })
 setMethod("convert", signature("Measure","Unit_type"),
           function(object, to){
@@ -44,9 +42,8 @@ setMethod("convert", signature("Measure","Weight"),
               rlang::abort("No preexisting Weight Class on object")
             }
             object@.Data <- object@.Data*conversion(object@Weight, to)
-            object@Weight@unit <- to@unit
-            object@Weight@prefix <- to@prefix
-            object@Weight@scale <- to@scale
+            to@power <- object@Weight@power
+            object@Weight <- to
             object
           })
 setMethod("convert", signature("Measure","Distance"),
@@ -55,9 +52,8 @@ setMethod("convert", signature("Measure","Distance"),
               rlang::abort("No preexisting Distance Class on object")
             }
             object@.Data <- object@.Data*conversion(object@Distance, to)
-            object@Distance@unit <- to@unit
-            object@Distance@prefix <- to@prefix
-            object@Distance@scale <- to@scale
+            to@power <- object@Distance@power
+            object@Distance <- to
             object
           })
 setMethod("convert", signature("Measure","Time"),
@@ -66,9 +62,8 @@ setMethod("convert", signature("Measure","Time"),
               rlang::abort("No preexisting Time Class on object")
             }
             object@.Data <- object@.Data*conversion(object@Time, to)
-            object@Time@unit <- to@unit
-            object@Time@prefix <- to@prefix
-            object@Time@scale <- to@scale
+            to@power <- object@Time@power
+            object@Time <- to
             object
           })
 setMethod("convert", signature("Measure","Temperature"),
@@ -77,20 +72,19 @@ setMethod("convert", signature("Measure","Temperature"),
               rlang::abort("No preexisting Temperature Class on object")
             }
             object@.Data <- object@.Data*conversion(object@Temperature, to)
-            object@Temperature@unit <- to@unit
-            object@Temperature@prefix <- to@prefix
-            object@Temperature@scale <- to@scale
+            to@power <- object@Temperature@power
+            object@Temperature <- to
             object
           })
 
 setGeneric("conversion", valueClass = "numeric", function(object, to) standardGeneric("conversion"))
 setMethod("conversion", signature("Ounce","Gram"),
           function(object, to){
-            (object@scale^object@power)*(28.3495/(to@scale^object@power))
+            (object@scale^object@power)*((28.3495/to@scale)^object@power)
           })
 setMethod("conversion", signature("Gram","Ounce"),
           function(object, to){
-            (object@scale^object@power)*(0.035274/(to@scale^object@power))
+            (object@scale^object@power)*((0.035274/to@scale)^object@power)
           })
 
 setMethod("conversion", signature("Unit_type", "Unit_type"),
