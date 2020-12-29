@@ -33,7 +33,6 @@ setMethod("identical_measures",
             e1_l <- getUnitSlots(e1)
             e2_l <- getUnitSlots(e2)
             if(!all(names(e1_l)%in%names(e2_l))) return(FALSE)
-            e2_l <- e2_l[names(e1_l)]
             logi <- Map(function(x, y){
               x@unit==y@unit&&x@prefix==y@prefix&&x@power==y@power&&x@scale==y@scale
             }, x = e1_l, y = e2_l)
@@ -41,7 +40,19 @@ setMethod("identical_measures",
           })
 setMethod("identical_measures", signature("Unit_type","Unit_type"),
           function(e1, e2){
-            class(e1)==class(e2)&&e1@unit==e2@unit&&e1@prefix==e2@prefix&&e1@power==e2@power&&e1@scale==e2@scale
+            e1@unit==e2@unit&&e1@prefix==e2@prefix&&e1@power==e2@power&&e1@scale==e2@scale
+          })
+
+
+setGeneric("identical_powers", valueClass = "logical", function(e1, e2) standardGeneric("identical_powers"))
+setMethod("identical_powers",
+          signature(e1 = "Measure", e2 = "Measure"),
+          function(e1, e2){
+            e1_l <- getUnitSlots(e1)
+            e2_l <- getUnitSlots(e2)
+            if(!all(names(e1_l)%in%names(e2_l))) return(FALSE)
+            logi <- map2_lgl(e1_l, e2_l, function(x,y){x@power==y@power})
+            all(logi)
           })
 
 setGeneric("convertable", valueClass = "logical", function(e1, e2) standardGeneric("convertable"))
