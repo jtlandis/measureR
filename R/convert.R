@@ -1,5 +1,5 @@
 
-setGeneric("convert", valueClass = "Measure", function(object, to) standardGeneric("convert"))
+setGeneric("convert", valueClass = c("Measure","list"), function(object, to) standardGeneric("convert"))
 setMethod("convert", signature("Measure","Measure"),
           function(object, to){
             e1_l <- getAllUnitSlots(object)
@@ -11,12 +11,12 @@ setMethod("convert", signature("Measure","Measure"),
             new_slots <- map(slots_build, pluck, 1)
             conversion_factors <- reduce(map(slots_build, pluck, 2), `*`)
             object <- reduce(c(list(object),new_slots), function(x,y){setUnitSlot(x) <- y; x})
-            object@value <- object@value*conversion_factors
+            object@.Data <- object@.Data*conversion_factors
             # object
             # # e2_l <- e2_l[names(e1_l)]
             # # conversion_factors <- Map(conversion, object = e1_l, to = e2_l)
             # # object <- purrr::reduce(c(list(object),e2_l), function(x,y){setUnitSlot(x) <- y; x})
-            # # object@value <- object@value*reduce(conversion_factors, `*`)
+            # # object@.Data <- object@.Data*reduce(conversion_factors, `*`)
             object
           })
 setMethod("convert", signature("Unit_type","Unit_type"),
@@ -25,8 +25,8 @@ setMethod("convert", signature("Unit_type","Unit_type"),
             e1_active <- is_active(object)
             e2_active <- is_active(object)
             if(!e1_active||!e2_active) return(list(object, scale))
-            if(e1_active&&e2_active&&!identical_measures(objet, to)){
-              scale <- conversion(object, to) #scale to multiply against e1@value
+            if(e1_active&&e2_active&&!identical_measures(object, to)){
+              scale <- conversion(object, to) #scale to multiply against e1@.Data
             }
             object@unit <- to@unit
             object@prefix <- to@prefix
@@ -43,7 +43,7 @@ setMethod("convert", signature("Measure","Weight"),
             if(!is_active(object@Weight)){
               rlang::abort("No preexisting Weight Class on object")
             }
-            object@value <- object@value*conversion(object@Weight, to)
+            object@.Data <- object@.Data*conversion(object@Weight, to)
             object@Weight@unit <- to@unit
             object@Weight@prefix <- to@prefix
             object@Weight@scale <- to@scale
@@ -54,7 +54,7 @@ setMethod("convert", signature("Measure","Distance"),
             if(!is_active(object@Distance)){
               rlang::abort("No preexisting Distance Class on object")
             }
-            object@value <- object@value*conversion(object@Distance, to)
+            object@.Data <- object@.Data*conversion(object@Distance, to)
             object@Distance@unit <- to@unit
             object@Distance@prefix <- to@prefix
             object@Distance@scale <- to@scale
@@ -65,7 +65,7 @@ setMethod("convert", signature("Measure","Time"),
             if(!is_active(object@Time)){
               rlang::abort("No preexisting Time Class on object")
             }
-            object@value <- object@value*conversion(object@Time, to)
+            object@.Data <- object@.Data*conversion(object@Time, to)
             object@Time@unit <- to@unit
             object@Time@prefix <- to@prefix
             object@Time@scale <- to@scale
@@ -76,7 +76,7 @@ setMethod("convert", signature("Measure","Temperature"),
             if(!is_active(object@Temperature)){
               rlang::abort("No preexisting Temperature Class on object")
             }
-            object@value <- object@value*conversion(object@Temperature, to)
+            object@.Data <- object@.Data*conversion(object@Temperature, to)
             object@Temperature@unit <- to@unit
             object@Temperature@prefix <- to@prefix
             object@Temperature@scale <- to@scale

@@ -1,19 +1,21 @@
 #' @include unit_types.R
 NULL
 
-measure <- setClass("Measure", slots = c(value = "numeric",
-                                         Weight = "Weight",
-                                         Distance = "Distance",
-                                         Time = "Time",
-                                         Temperature = "Temperature"))
+measure <- setClass("Measure",
+                    contains = "numeric",
+                    slots = c(Weight = "Weight",
+                              Distance = "Distance",
+                              Time = "Time",
+                              Temperature = "Temperature"))
 setMethod("initialize", "Measure",
-          function(.Object, value = numeric(0),
+          function(.Object,
+                   .Data = numeric(0),
                    Weight,
                    Distance,
                    Time,
                    Temperature,
                    ...){
-            .Object@value <- value
+            .Object@.Data <- .Data
             .Object@Weight <- Weight %missing% new("Weight")
             .Object@Distance <- Distance %missing% new("Distance")
             .Object@Time <- Time %missing% new("Time")
@@ -52,16 +54,16 @@ setMethod("show", "Measure",
             cat("measure: ",
                 #class(object@type),
                 " ", the_unit, "\n", sep = "")
-            print(object@value)
+            print(object@.Data)
             cat("\n")
           })
 
 head.measure <- function(x, ...){
-  x@value <- head(x@value, ...)
+  x@.Data <- head(x@.Data, ...)
   x
 }
 tail.measure <- function(x, ...){
-  x@value <- tail(x@value, ...)
+  x@.Data <- tail(x@.Data, ...)
   x
 }
 
