@@ -20,7 +20,7 @@ setMethod("getUnit", signature = "Ounce",
 setGeneric("ounce", valueClass = "Measure", function(object) standardGeneric("ounce"))
 setMethod("ounce", signature("missing"), function(object) measure(Weight = new("Ounce")))
 setMethod("ounce", signature("numeric"), function(object) measure(.Data =object, Weight = new("Ounce")))
-setMethod("ounce", signature("measure"), function(object) convert(object, new("Ounce")))
+setMethod("ounce", signature("Measure"), function(object) convert(object, new("Ounce")))
 
 
 
@@ -39,7 +39,7 @@ setMethod("initialize", "Pound",
 setGeneric("pound", valueClass = "Measure", function(object) standardGeneric("pound"))
 setMethod("pound", signature("missing"), function(object) measure(Weight = new("Pound")))
 setMethod("pound", signature("numeric"), function(object) measure(.Data =object, Weight = new("Pound")))
-setMethod("pound", signature("measure"), function(object) convert(object, new("Pound")))
+setMethod("pound", signature("Measure"), function(object) convert(object, new("Pound")))
 
 # pound ----
 
@@ -55,6 +55,6 @@ setMethod("initialize", "Dram",
 setGeneric("dram", valueClass = "Measure", function(object) standardGeneric("dram"))
 setMethod("dram", signature("missing"), function(object) measure(Weight = new("Dram")))
 setMethod("dram", signature("numeric"), function(object) measure(.Data =object, Weight = new("Dram")))
-setMethod("dram", signature("measure"), function(object) convert(object, new("Dram")))
+setMethod("dram", signature("Measure"), function(object) convert(object, new("Dram")))
 
 
