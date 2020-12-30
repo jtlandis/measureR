@@ -18,7 +18,7 @@ setMethod("getUnit", signature = "UnitSystem",
 setMethod("getUnit", signature = "Measure",
           function(object){
             info <- object@info
-            if(sum(map_lgl(info, is_active))==0) return("constant")
+            if(length(info)==0||sum(map_lgl(info, is_active))==0) return("constant")
             o_unit <- map_chr(info, function(x){
               paste0(x@.Data,ifelse(abs(x@power)==1, "", paste0("^",abs(x@power))))
             })
