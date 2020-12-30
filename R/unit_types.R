@@ -18,7 +18,7 @@ setMethod("getUnit", signature = "UnitSystem",
 setMethod("getUnit", signature = "Measure",
           function(object){
             info <- object@info
-            if(length(info)==0) return("constant")
+            if(sum(map_lgl(info, is_active))==0) return("constant")
             o_unit <- map_chr(info, function(x){
               paste0(x@.Data,ifelse(abs(x@power)==1, "", paste0("^",abs(x@power))))
             })
@@ -28,11 +28,21 @@ setMethod("getUnit", signature = "Measure",
             paste0(numer_, denom_)
           })
 
-setGeneric("setInfo<-", function(object, value) standardGeneric("setInfo<-"))
+setGeneric("setInfo<-", function(object, update, value) standardGeneric("setInfo<-"))
 setReplaceMethod("setInfo",
-                 signature("Measure", "UnitList"),
-                 function(object, value){
-                   object@info <- value
+                 signature("Measure","logical", "UnitList"),
+                 function(object, update = T, value) {
+                   v_names <- names(value)
+                   if(is.null(v_names)) {
+                     v_names <- whichUnitSystemClass(value)
+                   }
+                   if(!update) {
+                     notv_names <- names(object@info)[!names(object@info)%in% v_names]
+                     object@info[notv_names] <- NULL
+                     object@info[v_names] <- value
+                   } else {
+                     object@info[v_names] <- value
+                   }
                    object
                  })
 
