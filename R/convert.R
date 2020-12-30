@@ -1,3 +1,4 @@
+#' @include gram.R ounce.R
 
 setGeneric("convert", valueClass = c("Measure","list"), function(object, to) standardGeneric("convert"))
 setMethod("convert", signature("Measure","Measure"),
