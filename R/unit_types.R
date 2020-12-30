@@ -30,7 +30,7 @@ setMethod("getUnit", signature = "Measure",
 
 setGeneric("setInfo<-", function(object, update, value) standardGeneric("setInfo<-"))
 setReplaceMethod("setInfo",
-                 signature("Measure","logical", "UnitList"),
+                 signature("Measure", "logical", "UnitList"),
                  function(object, update = T, value) {
                    v_names <- names(value)
                    if(is.null(v_names)) {

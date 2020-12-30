@@ -11,7 +11,7 @@ setMethod("initialize", "Measure",
                    ...){
             .Object@.Data <- .Data
             unitlist <- new("UnitList", ...)
-            setInfo(.Object) <- unitlist
+            .Object@info[names(unitlist)] <- unitlist
             validObject(.Object@info)
             .Object
           })
