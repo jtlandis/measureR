@@ -33,14 +33,6 @@ Mgram <- function(x) if(missing(x)) Constructor(Class = "Gram", unit = "Mg") els
 Ggram <- function(x) if(missing(x)) Constructor(Class = "Gram", unit = "Gg") else Constructor(object = x, Class = "Gram", unit = "Gg")
 
 
-setClass("Gram2", contains = c("Distance"))
-setMethod("initialize", "Gram2",
-          function(.Object, ..., unit = "g"){
-            scale <- metric_scale(gsub("g$","",unit))
-            .Object <- callNextMethod(.Object, .Data = unit)
-            .Object@power <- 1
-            .Object@scale <- scale
-            .Object
-          })
+
 
 
