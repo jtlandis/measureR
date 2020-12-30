@@ -1,47 +1,53 @@
-# base classes
 
-#' S4 base Unit class
-#'
-#' S4 class base used track Unit Characteristics. All objects
-#' of measure inherit from or contain this class
-#'
-#' @slot unit describes the base unit of a 'family'.
-#' @slot prefix describes a prefix to the unit. Shorthand label
-#' that usually indicates the scale of the unit. In non-metric
-#' units, this slot is only used for the display.
-#' @slot scale numeric describing ratio of the 'family' unit to
-#' itself.
-#' @slot power numeric describing how many of a particular unit
-#'  (squared vs cubed). A positive power indicates unit in the
-#'  numerator while a negative power indicates unit in the
-#'  denominator.
-setClass("Unit_type", slots = c(unit = "character",
-                                prefix = "character",
-                                scale = "numeric",
-                                power = "numeric"))
+#' Base Class characterizes the Unit label and how many of said label
+setClass("Unit", contains = "character", slots = c(power = "numeric"))
+setMethod("initialize", "Unit",
+          function(.Object, .Data = character(), power = 0){
+            .Object@.Data <- .Data
+            .Object@power <- power
+            .Object
+          })
 
-#' S4 Weight Unit class
-#'
-#' S4 class base used track Unit Characteristics. This class
-#' supports all Weight typed units
-#'
-#' @slot unit describes the base unit of a 'family'.
-#' @slot prefix describes a prefix to the unit. Shorthand label
-#' that usually indicates the scale of the unit. In non-metric
-#' units, this slot is only used for the display.
-#' @slot scale numeric describing ratio of the 'family' unit to
-#' itself.
-#' @slot power numeric describing how many of a particular unit
-#'  (squared vs cubed). A positive power indicates unit in the
-#'  numerator while a negative power indicates unit in the
-#'  denominator.
-setClass("Weight", contains = "Unit_type")
+#' Base System class that will be responsible for containing
+#' How to convert back to the base class label -see UnitSystem-class
+setClass("System", slots = c(scale = "numeric"))
+setMethod("initialize", "System",
+          function(.Object, .Data = "Default_System_Value", scale = 1){
+            .Object@scale <- scale
+            .Object
+          })
+metric_prefix <- c("",
+                   "da","h","k","M","G","T","P","E","Z","Y",
+                   "d","c","m","u","n","p","f","a","z","y")
 
-#' @describeIn Unit_type-class base S4 class for all Distance related Units
-setClass("Distance", contains = "Unit_type")
+#' Class for metric system.
+setClass("Metric", contains = "System")
+setMethod("initialize", "Metric",
+          function(.Object, .Data = "Metric"){
+            if(!is.element(.Data, metric_prefix)){
+              abort(glue("Metric Class must be initialized with one of",
+                         " {paste0(\"\\\"\",metric_prefix,\"\\\"\", collapse = \", \")}"))
+            }
+            .Object@scale <- 10^(switch(.Data,
+                                        da = 1L,h = 2L,k = 3L, M = 6L, G = 9L,
+                                        `T` = 12L, P = 15L, E = 18L, Z= 21L, Y = 24L,
+                                        d = -1L, c = -2L, m = -3L, u = -6L, n = -9L,
+                                        p = -12L, f = -15L, a = -18L, z = -21L, y = -24L,
+                                        0L
+            ))
+            .Object
+          })
 
-#' @describeIn Unit_type-class base S4 class for all Time related Units
-setClass("Time", contains = "Unit_type")
+#' S4 container to extend unit and a slo
+setClass("UnitSystem", contains = c("Unit","System"))
+setMethod("initialize", "UnitSystem",
+          function(.Object, .Data, system){
+            .data <- .Data %missing% new("Unit")
+            .Object@.Data <- .data@.Data
+            .Object@power <- .data@power
+            .Object@system <- system %missing% new("System")
+            .Object
+          })
 
-#' @describeIn Unit_type-class base S4 class for all Temperature related Units
-setClass("Temperature", contains = "Unit_type")
+setClass("Weight", contains = "UnitSystem")
+setClass("Distance", contains = "UnitSystem")
