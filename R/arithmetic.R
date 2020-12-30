@@ -122,7 +122,9 @@ setMethod("/", signature("Measure", "numeric"),
           })
 setMethod("/", signature("numeric", "Measure"),
           function(e1, e2){
-            e2@.Data <- e2@.Data/e1
+            e2_info <- map(e2@info, function(x){x@power <- x@power*-1; x})
+            e2@info[names(e2_info)] <- e2_info
+            e2@.Data <- e1/e2@.Data
             e2
           })
 
