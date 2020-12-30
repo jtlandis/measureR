@@ -1,25 +1,33 @@
 #' @include unit_types.R
 NULL
 
+setClass("UnitList", contains = "list")
+setValidity("UnitList",
+            function(object){
+              valid <- map_lgl(object, is_UnitSystem)
+              err <- character()
+              if(!all(valid)){
+                err <- c(err, glue("All elements of UnitList must inherit from UnitSystem"))
+              }
+              if(length(err)>0){
+                return(err)
+              }
+              return(TRUE)
+            })
+
 measure <- setClass("Measure",
                     contains = "numeric",
-                    slots = c(Weight = "Weight",
-                              Distance = "Distance",
-                              Time = "Time",
-                              Temperature = "Temperature"))
+                    slots = c(info = "UnitList")
+                    )
 setMethod("initialize", "Measure",
           function(.Object,
                    .Data = numeric(0),
-                   Weight,
-                   Distance,
-                   Time,
-                   Temperature,
                    ...){
             .Object@.Data <- .Data
             .Object@Weight <- Weight %missing% new("Weight")
-            .Object@Distance <- Distance %missing% new("Distance")
-            .Object@Time <- Time %missing% new("Time")
-            .Object@Temperature <- Temperature %missing% new("Temperature")
+            # .Object@Distance <- Distance %missing% new("Distance")
+            # .Object@Time <- Time %missing% new("Time")
+            # .Object@Temperature <- Temperature %missing% new("Temperature")
             validObject(.Object)
             .Object
           })

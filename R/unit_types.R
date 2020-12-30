@@ -1,21 +1,12 @@
 
 
 
-setMethod("initialize", "Unit_type",
-          function(.Object, unit = NA_character_, prefix = "", scale = 1, power = 0, ...){
-            .Object@unit <- unit
-            .Object@prefix <- prefix
-            .Object@scale <- scale
-            .Object@power <- power
-            .Object
-          })
-
 #' @export
 is_active <- function(x) UseMethod("is_active", x)
 is_active.default <- function(x) FALSE
-is_active.Unit_type <- function(x) x@power!=0&&!is.na(x@unit)
+is_active.UnitSystem <- function(x) x@power!=0&&!is.na(x@.Data)
 
-setMethod("is_active", "Unit_type", is_active.Unit_type)
+setMethod("is_active", "UnitSystem", is_active.UnitSystem)
 
 setGeneric("getUnitSlots", valueClass = "list", function(object) standardGeneric("getUnitSlots"))
 setMethod("getUnitSlots", signature = "Measure",
