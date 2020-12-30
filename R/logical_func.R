@@ -64,5 +64,5 @@ setGeneric("convertable", valueClass = "logical", function(e1, e2) standardGener
 setMethod("convertable",
           signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            all(names(getUnitSlots(e1))%in%names(getUnitSlots(e2)))
+            setequal(names(e1@info), names(e2@info))
           })
