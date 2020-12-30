@@ -1,6 +1,5 @@
 
-#' @importFrom rlang abort warn
-#' @importFrom glue glue
+
 setMethod("+", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
             if(!convertable(e1, e2)||!identical_powers(e1, e2)){
@@ -45,7 +44,7 @@ setMethod("-", signature("numeric", "Measure"),
             e2
           })
 
-#' @importFrom purrr map2 reduce map map2_lgl pluck
+
 setMethod("*", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
             e1_info <- e1@info
