@@ -26,10 +26,12 @@ setMethod("getUnit", signature = "UnitSystem",
           })
 setMethod("getUnit", signature = "Measure",
           function(object){
-            unit_l <- object@info
-            if(length(unit_l)==0) return("constant")
-            o_unit <- vapply(unit_l, function(x){ paste0(getUnit(x),ifelse(abs(x@power)==1, "", paste0("^",abs(x@power))))}, FUN.VALUE = character(1))
-            numerator <- vapply(unit_l, FUN = function(x) x@power>0, FUN.VALUE = logical(1))
+            info <- object@info
+            if(length(info)==0) return("constant")
+            o_unit <- map_chr(info, function(x){
+              paste0(x@.Data,ifelse(abs(x@power)==1, "", paste0("^",abs(x@power))))
+            })
+            numerator <- map_lgl(info, ~.x@power>0)
             numer_ <- ifelse(sum(numerator)>0, paste0("(",o_unit[numerator],")", collapse = "*"), "1")
             denom_ <- ifelse(sum(!numerator)>0,paste0("/",paste0("(",o_unit[!numerator],")",collapse = "*")), "")
             paste0(numer_, denom_)

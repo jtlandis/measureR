@@ -9,7 +9,7 @@
 
 
 
-setClass("Gram", contains = "Weight")
+setClass("Gram", contains = c("Weight","Metric"))
 setMethod("initialize", "Gram",
           function(.Object, unit = "g"){
             munit <- paste0(metric_prefix,"g")

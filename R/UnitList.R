@@ -3,8 +3,8 @@
 
 setClass("UnitList", contains = "list")
 setMethod("initialize", "UnitList",
-          function(.Object, .Data, ...){
-            .Object@.Data <- list(.Data, ...)
+          function(.Object, ...){
+            .Object@.Data <- list(...)
             validObject(.Object)
             .Object
           })
