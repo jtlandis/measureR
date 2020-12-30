@@ -3,6 +3,9 @@
 is_Measure <- function(x) inherits(x, "Measure")
 
 #' @export
+is_UnitSystem <- function(x) inherits(x, "UnitSystem")
+
+#' @export
 is_Weight <- function(x) UseMethod("is_Weight", x)
 is_Weight.default <- function(x) inherits(x, "Weight")
 is_Weight.Measure <- function(x) any(vapply(getUnitSlots(x), is_Weight.default, logical(1)))
