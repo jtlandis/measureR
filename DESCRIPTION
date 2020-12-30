@@ -23,4 +23,5 @@ Collate:
     'convert.R'
     'helpers.R'
     'logical_func.R'
+    'meter.R'
     'unit_types.R'

@@ -2,8 +2,8 @@
 
 setClass("Meter", contains = c("Distance"))
 setMethod("initialize", "Meter",
-          function(.Object, ..., unit = "g"){
-            scale <- metric_scale(gsub("g$","",unit))
+          function(.Object, ..., unit = "m"){
+            scale <- metric_scale(gsub("m$","",unit))
             .Object <- callNextMethod(.Object, .Data = unit)
             .Object@power <- 1
             .Object@scale <- scale

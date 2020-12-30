@@ -110,7 +110,7 @@ setMethod("/", signature(e1 = "Measure", e2 = "Measure"),
               e1@info[commonslot] <- new_slots
             }
             if(length(e2_unames)>0){
-              e1@info[e2_unames] <- e2@info[e2_unames]
+              e1@info[e2_unames] <- e2_info[e2_unames]
             }
             e1@.Data <- e1@.Data/(e2@.Data*scale)
             e1
