@@ -20,13 +20,13 @@ setMethod("getUnitSlots", signature = "Measure",
 
 #' @export
 setGeneric("getUnit", valueClass = "character", function(object) standardGeneric("getUnit"))
-setMethod("getUnit", signature = "Unit_type",
+setMethod("getUnit", signature = "UnitSystem",
           function(object){
-            paste0(object@prefix, object@unit)
+            object@.Data
           })
 setMethod("getUnit", signature = "Measure",
           function(object){
-            unit_l <- getUnitSlots(object)
+            unit_l <- object@info
             if(length(unit_l)==0) return("constant")
             o_unit <- vapply(unit_l, function(x){ paste0(getUnit(x),ifelse(abs(x@power)==1, "", paste0("^",abs(x@power))))}, FUN.VALUE = character(1))
             numerator <- vapply(unit_l, FUN = function(x) x@power>0, FUN.VALUE = logical(1))

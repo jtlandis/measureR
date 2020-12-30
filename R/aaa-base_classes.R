@@ -1,4 +1,8 @@
 
+#' @importFrom rlang warn abort
+#' @importFrom glue glue
+#' @importFrom purrr map map_lgl map2_lgl map2 reduce pluck
+
 #' Base Class characterizes the Unit label and how many of said label
 setClass("Unit", contains = "character", slots = c(power = "numeric"))
 setMethod("initialize", "Unit",

@@ -10,6 +10,7 @@ setMethod("initialize", "UnitList",
           })
 setValidity("UnitList",
             function(object){
+              if(length(object)==0) return(TRUE)
               valid <- map_lgl(object, is_UnitSystem)
               err <- character()
               if(!all(valid)){
@@ -24,11 +25,14 @@ setValidity("UnitList",
               return(TRUE)
             })
 
+m <- measure(1:4, new("Gram", unit = "kg"))
 
 
-setGeneric("setUnitList<-", function(object, value) standardGeneric("setUnitList<-"))
-setReplaceMethod("setUnitList",
-                 signature("Measure", "list"),
+
+setGeneric("setInfo<-", function(object, value) standardGeneric("setInfo<-"))
+setReplaceMethod("setInfo",
+                 signature("Measure", "UnitList"),
                  function(object, value){
-
+                   object@info <- value
+                   object
                  })

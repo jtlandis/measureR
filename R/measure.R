@@ -10,9 +10,8 @@ setMethod("initialize", "Measure",
                    .Data = numeric(0),
                    ...){
             .Object@.Data <- .Data
-            dots <- list(...)
-            dots <- dots[map_lgl(dots, is_UnitSystem)]
-            setUnitList(.Object) <- dots
+            unitlist <- new("UnitList", ...)
+            setInfo(.Object) <- unitlist
             validObject(.Object@info)
             .Object
           })
@@ -22,7 +21,6 @@ setMethod("show", "Measure",
           function(object){
             the_unit <- getUnit(object)
             cat("measure: ",
-                #class(object@type),
                 " ", the_unit, "\n", sep = "")
             print(object@.Data)
             cat("\n")
