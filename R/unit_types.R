@@ -8,15 +8,6 @@ is_active.UnitSystem <- function(x) x@power!=0&&!is.na(x@.Data)
 
 setMethod("is_active", "UnitSystem", is_active.UnitSystem)
 
-setGeneric("getUnitSlots", valueClass = "list", function(object) standardGeneric("getUnitSlots"))
-setMethod("getUnitSlots", signature = "Measure",
-          function(object){
-            l_ <- map2(list(object), UnitSlots, slot)
-            logi <- vapply(l_, is_active, FUN.VALUE = logical(1))
-            l_ <- l_[logi]
-            names(l_) <- UnitSlots[logi]
-            l_
-          })
 
 #' @export
 setGeneric("getUnit", valueClass = "character", function(object) standardGeneric("getUnit"))
@@ -37,6 +28,12 @@ setMethod("getUnit", signature = "Measure",
             paste0(numer_, denom_)
           })
 
-
+setGeneric("setInfo<-", function(object, value) standardGeneric("setInfo<-"))
+setReplaceMethod("setInfo",
+                 signature("Measure", "UnitList"),
+                 function(object, value){
+                   object@info <- value
+                   object
+                 })
 
 

@@ -2,24 +2,18 @@
 setGeneric("convert", valueClass = c("Measure","list"), function(object, to) standardGeneric("convert"))
 setMethod("convert", signature("Measure","Measure"),
           function(object, to){
-            e1_l <- getAllUnitSlots(object)
-            e2_l <- getAllUnitSlots(to)
-            slots_build <- map2(e1_l, e2_l, convert)
-            # if(!all(names(e1_l)%in%names(e2_l))){
-            #   abort(glue("Cannot convert {getUnit(object)} to {getUnit(to)}. Missing Unit_type(s)"))
-            # }
+            e1_info <- object@info
+            e2_info <- to@info
+            #find common slots
+            commonslot <- intersect(names(e1_info), names(e2_info))
+            slots_build <- map2(e1_info[commonslot], e2_info[commonslot], convert)
             new_slots <- map(slots_build, pluck, 1)
             conversion_factors <- reduce(map(slots_build, pluck, 2), `*`)
-            object <- reduce(c(list(object),new_slots), function(x,y){setUnitSlot(x) <- y; x})
+            object@info[commonslot] <- new_slots
             object@.Data <- object@.Data*conversion_factors
-            # object
-            # # e2_l <- e2_l[names(e1_l)]
-            # # conversion_factors <- Map(conversion, object = e1_l, to = e2_l)
-            # # object <- purrr::reduce(c(list(object),e2_l), function(x,y){setUnitSlot(x) <- y; x})
-            # # object@.Data <- object@.Data*reduce(conversion_factors, `*`)
             object
           })
-setMethod("convert", signature("Unit_type","Unit_type"),
+setMethod("convert", signature("UnitSystem","UnitSystem"),
           function(object, to){
             scale <- 1
             e1_active <- is_active(object)
@@ -31,63 +25,63 @@ setMethod("convert", signature("Unit_type","Unit_type"),
             to@power <- object@power
             return(list(to, scale))
           })
-setMethod("convert", signature("Measure","Unit_type"),
+setMethod("convert", signature("Measure","UnitSystem"),
           function(object, to){
-            rlang::abort(glue::glue("No method defined for Unit_type {class(to)}"))
+            rlang::abort(glue::glue("No method defined for UnitSystem {class(to)}"))
           })
 
 setMethod("convert", signature("Measure","Weight"),
           function(object, to){
-            if(!is_active(object@Weight)){
+            if(!is_active(object@info[["Weight"]])){
               rlang::abort("No preexisting Weight Class on object")
             }
-            object@.Data <- object@.Data*conversion(object@Weight, to)
-            to@power <- object@Weight@power
-            object@Weight <- to
+            object@.Data <- object@.Data*conversion(object@info[["Weight"]], to)
+            to@power <- object@info[["Weight"]]@power
+            object@info[["Weight"]] <- to
             object
           })
 setMethod("convert", signature("Measure","Distance"),
           function(object, to){
-            if(!is_active(object@Distance)){
+            if(!is_active(object@info[["Distance"]])){
               rlang::abort("No preexisting Distance Class on object")
             }
-            object@.Data <- object@.Data*conversion(object@Distance, to)
-            to@power <- object@Distance@power
-            object@Distance <- to
+            object@.Data <- object@.Data*conversion(object@info[["Distance"]], to)
+            to@power <- object@info[["Distance"]]@power
+            object@info[["Distance"]] <- to
             object
           })
 setMethod("convert", signature("Measure","Time"),
           function(object, to){
-            if(!is_active(object@Time)){
+            if(!is_active(object@info[["Time"]])){
               rlang::abort("No preexisting Time Class on object")
             }
-            object@.Data <- object@.Data*conversion(object@Time, to)
-            to@power <- object@Time@power
-            object@Time <- to
+            object@.Data <- object@.Data*conversion(object@info[["Time"]], to)
+            to@power <- object@info[["Time"]]@power
+            object@info[["Time"]] <- to
             object
           })
 setMethod("convert", signature("Measure","Temperature"),
           function(object, to){
-            if(!is_active(object@Temperature)){
+            if(!is_active(object@info[["Temperature"]])){
               rlang::abort("No preexisting Temperature Class on object")
             }
-            object@.Data <- object@.Data*conversion(object@Temperature, to)
-            to@power <- object@Temperature@power
-            object@Temperature <- to
+            object@.Data <- object@.Data*conversion(object@info[["Temperature"]], to)
+            to@power <- object@info[["Temperature"]]@power
+            object@info[["Temperature"]] <- to
             object
           })
 
 setGeneric("conversion", valueClass = "numeric", function(object, to) standardGeneric("conversion"))
-setMethod("conversion", signature("Ounce","Gram"),
-          function(object, to){
-            (object@scale^object@power)*((28.3495/to@scale)^object@power)
-          })
-setMethod("conversion", signature("Gram","Ounce"),
-          function(object, to){
-            (object@scale^object@power)*((0.035274/to@scale)^object@power)
-          })
+# setMethod("conversion", signature("Ounce","Gram"),
+#           function(object, to){
+#             (object@scale^object@power)*((28.3495/to@scale)^object@power)
+#           })
+# setMethod("conversion", signature("Gram","Ounce"),
+#           function(object, to){
+#             (object@scale^object@power)*((0.035274/to@scale)^object@power)
+#           })
 
-setMethod("conversion", signature("Unit_type", "Unit_type"),
+setMethod("conversion", signature("UnitSystem", "UnitSystem"),
           function(object, to){
             (object@scale^object@power)/(to@scale^object@power)
           })

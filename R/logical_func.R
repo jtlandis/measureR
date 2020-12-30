@@ -33,17 +33,19 @@ setGeneric("identical_measures", valueClass = "logical", function(e1, e2) standa
 setMethod("identical_measures",
           signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            e1_l <- getUnitSlots(e1)
-            e2_l <- getUnitSlots(e2)
-            if(!all(names(e1_l)%in%names(e2_l))) return(FALSE)
-            logi <- Map(function(x, y){
-              x@unit==y@unit&&x@prefix==y@prefix&&x@power==y@power&&x@scale==y@scale
-            }, x = e1_l, y = e2_l)
-            all(unlist(logi))
+            e1_info <- e1@info
+            e1_type <- names(e1_info)
+            e2_info <- e2@info
+            e2_type <- names(e2_info)
+            if(!setequal(e1_type, e2_type)) return(FALSE)
+            logi <- map2_lgl(e1_info, e2_info, function(x,y){
+              x@.Data==y@.Data&&x@power==y@power&&x@scale==y@scale
+            })
+            all(logi)
           })
-setMethod("identical_measures", signature("Unit_type","Unit_type"),
+setMethod("identical_measures", signature("UnitSystem","UnitSystem"),
           function(e1, e2){
-            e1@unit==e2@unit&&e1@prefix==e2@prefix&&e1@power==e2@power&&e1@scale==e2@scale
+            e1@.Data==e2@.Data&&e1@power==e2@power&&e1@scale==e2@scale
           })
 
 
@@ -51,10 +53,10 @@ setGeneric("identical_powers", valueClass = "logical", function(e1, e2) standard
 setMethod("identical_powers",
           signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            e1_l <- getUnitSlots(e1)
-            e2_l <- getUnitSlots(e2)
-            if(!all(names(e1_l)%in%names(e2_l))) return(FALSE)
-            logi <- map2_lgl(e1_l, e2_l, function(x,y){x@power==y@power})
+            e1_info <- e1@info
+            e2_info <- e2@info
+            if(!setequal(names(e1_info),names(e2_info))) return(FALSE)
+            logi <- map2_lgl(e1_info, e2_info, function(x,y){x@power==y@power})
             all(logi)
           })
 
