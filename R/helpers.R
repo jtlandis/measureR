@@ -1,6 +1,13 @@
 
+#' @importFrom rlang call_args
+"%missing%" <- function(x, f){
+  if(missing(x)) return(f)
+  Call <- match.call()
+  f_args <- call_args(Call[[3L]])
+  result <- eval.parent(as.call(c(list(Call[[3L]][[1L]], x), f_args)))
+  return(result)
 
-#"%missing%" <- function(a,b) if(!missing(a)) a else b
+}
 
 UnitSlots <- c("Weight","Distance","Time","Temperature")
 
