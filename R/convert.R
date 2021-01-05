@@ -1,4 +1,4 @@
-#' @include gram.R ounce.R
+#' @include gram.R ounce.R foot.R meter.R
 
 setGeneric("convert", valueClass = c("Measure","list"), function(object, to) standardGeneric("convert"))
 setMethod("convert", signature("Measure","Measure"),
@@ -80,6 +80,14 @@ setMethod("conversion", signature("Ounce","Gram"),
 setMethod("conversion", signature("Gram","Ounce"),
           function(object, to){
             (object@scale^object@power)*((0.035274/to@scale)^object@power)
+          })
+setMethod("conversion", signature("Foot", "Meter"),
+          function(object, to){
+            (object@scale^object@power)*((.3048/to@scale)^object@power)
+          })
+setMethod("conversion", signature("Meter", "Foot"),
+          function(object, to){
+            (object@scale^object@power)*((3.28084/to@scale)^object@power)
           })
 
 setMethod("conversion", signature("UnitSystem", "UnitSystem"),
