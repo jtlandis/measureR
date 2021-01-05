@@ -15,13 +15,13 @@ setMethod("initialize", "Ounce",
 
 
 #' @export
-ounce <- function(x) if(missing(x)) Const_Weight(Class = "Ounce", unit = "oz") else Const_Weight(object = x, Class = "Ounce", unit = "oz")
+ounce <- function(x) x %missing% Const_Weight(Class = "Ounce", unit = "oz")
 #' @export
-pound <- function(x) if(missing(x)) Const_Weight(Class = "Ounce", unit = "lb") else Const_Weight(object = x, Class = "Ounce", unit = "lb")
+pound <- function(x) x %missing% Const_Weight(Class = "Ounce", unit = "lb")
 #' @export
-dram <- function(x) if(missing(x)) Const_Weight(Class = "Ounce", unit = "dr") else Const_Weight(object = x, Class = "Ounce", unit = "dr")
+dram <- function(x) x %missing% Const_Weight(Class = "Ounce", unit = "dr")
 #' @export
-ton <- function(x) if(missing(x)) Const_Weight(Class = "Ounce", unit = "ton") else Const_Weight(object = x, Class = "Ounce", unit = "ton")
+ton <- function(x) x %missing% Const_Weight(Class = "Ounce", unit = "ton")
 
 
 
