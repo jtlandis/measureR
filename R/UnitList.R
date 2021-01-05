@@ -43,6 +43,8 @@ setMethod("whichUnitSystemClass",
           })
 setMethod("whichUnitSystemClass", signature("Weight"), function(object) "Weight")
 setMethod("whichUnitSystemClass", signature("Distance"), function(object) "Distance")
+setMethod("whichUnitSystemClass", signature("Time"), function(object) "Time")
+setMethod("whichUnitSystemClass", signature("Temperature"), function(object) "Temperature")
 setMethod("whichUnitSystemClass", signature("UnitSystem"), function(object) "UnitSystem")
 #m <- measure(1:4, new("Gram", unit = "kg"))
 

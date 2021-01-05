@@ -35,3 +35,8 @@ metric_scale <- function(prefix){
 
 setClass("Weight", contains = "UnitSystem")
 setClass("Distance", contains = "UnitSystem")
+setClass("Time", contains = "UnitSystem")
+setClass("Temperature", contains = "UnitSystem")
+setClass("LiquidVolume", contains = "UnitSystem")
+setClass("Energy", contains = "UnitSystem")
+setClass("Luminous", contains = "UnitSystem")
