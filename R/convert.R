@@ -1,4 +1,4 @@
-#' @include gram.R ounce.R foot.R meter.R
+#' @include gram.R ounce.R foot.R meter.R temperatures.R
 
 setGeneric("convert", valueClass = c("Measure","list"), function(object, to) standardGeneric("convert"))
 setMethod("convert", signature("Measure","Measure"),
@@ -7,11 +7,12 @@ setMethod("convert", signature("Measure","Measure"),
             e2_info <- to@info
             #find common slots
             commonslot <- intersect(names(e1_info), names(e2_info))
-            slots_build <- map2(e1_info[commonslot], e2_info[commonslot], convert)
-            new_slots <- map(slots_build, pluck, 1)
-            conversion_factors <- reduce(map(slots_build, pluck, 2), `*`)
-            object@info[commonslot] <- new_slots
-            object@.Data <- object@.Data*conversion_factors
+            object <- reduce(c(list(object), e2_info[commonslot]), convert)
+            # slots_build <- map2(e1_info[commonslot], e2_info[commonslot], convert)
+            # new_slots <- map(slots_build, pluck, 1)
+            # conversion_factors <- reduce(map(slots_build, pluck, 2), `*`)
+            # object@info[commonslot] <- new_slots
+            # object@.Data <- object@.Data*conversion_factors
             object
           })
 setMethod("convert", signature("UnitSystem","UnitSystem"),
@@ -66,32 +67,58 @@ setMethod("convert", signature("Measure","Temperature"),
             if(!is_active(object@info[["Temperature"]])){
               rlang::abort("No preexisting Temperature Class on object")
             }
-            object@.Data <- object@.Data*conversion(object@info[["Temperature"]], to)
+            object@.Data <- conversion(object@info[["Temperature"]], to, x = object@.Data)
             to@power <- object@info[["Temperature"]]@power
             object@info[["Temperature"]] <- to
             object
           })
 
-setGeneric("conversion", valueClass = "numeric", function(object, to) standardGeneric("conversion"))
-setMethod("conversion", signature("Ounce","Gram"),
-          function(object, to){
+setGeneric("conversion", valueClass = "numeric", function(object, to, x) standardGeneric("conversion"))
+setMethod("conversion", signature("Ounce","Gram", "missing"),
+          function(object, to, x){
             (object@scale^object@power)*((28.3495/to@scale)^object@power)
           })
-setMethod("conversion", signature("Gram","Ounce"),
-          function(object, to){
+setMethod("conversion", signature("Gram","Ounce", "missing"),
+          function(object, to, x){
             (object@scale^object@power)*((0.035274/to@scale)^object@power)
           })
-setMethod("conversion", signature("Foot", "Meter"),
-          function(object, to){
+setMethod("conversion", signature("Foot", "Meter", "missing"),
+          function(object, to, x){
             (object@scale^object@power)*((.3048/to@scale)^object@power)
           })
-setMethod("conversion", signature("Meter", "Foot"),
-          function(object, to){
+setMethod("conversion", signature("Meter", "Foot", "missing"),
+          function(object, to, x){
             (object@scale^object@power)*((3.28084/to@scale)^object@power)
           })
 
-setMethod("conversion", signature("UnitSystem", "UnitSystem"),
-          function(object, to){
+setMethod("conversion", signature("UnitSystem", "UnitSystem", "missing"),
+          function(object, to, x){
             (object@scale^object@power)/(to@scale^object@power)
           })
+
+setMethod("conversion", signature("Celsius", "Kelvin", "numeric"),
+          function(object, to, x){
+            ((x^(1/object@power))+273.16)^object@power
+          })
+setMethod("conversion", signature("Kelvin", "Celsius", "numeric"),
+          function(object, to, x){
+            ((x^(1/object@power))-273.16)^object@power
+          })
+setMethod("conversion", signature("Celsius", "Fahrenheit", "numeric"),
+          function(object, to, x){
+            (((9/5)*(x^(1/object@power)))+32)^object@power
+          })
+setMethod("conversion", signature("Fahrenheit", "Celsius", "numeric"),
+          function(object, to, x){
+            ((5/9)*(x^(1/object@power)-32))^object@power
+          })
+setMethod("conversion", signature("Fahrenheit", "Kelvin", "numeric"),
+          function(object, to, x){
+            (((5/9)*(x^(1/object@power)-32))+273.16)^object@power
+          })
+setMethod("conversion", signature("Kelvin", "Fahrenheit", "numeric"),
+          function(object, to, x){
+            (((9/5)*(x^(1/object@power)-273.16))+32)^object@power
+          })
+
 

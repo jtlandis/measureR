@@ -7,7 +7,7 @@ measure <- setClass("Measure",
                     )
 setMethod("initialize", "Measure",
           function(.Object,
-                   .Data = numeric(0),
+                   .Data = 1,
                    ...){
             .Object@.Data <- .Data
             unitlist <- new("UnitList", ...)
