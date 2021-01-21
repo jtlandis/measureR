@@ -2,10 +2,10 @@ Package: measureR
 Type: Package
 Title: A S4 Class for units of measurements
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: person(given = "Justin", family = "Landis", email = "jtlandis314@gmail.com",  role = c("aut","cre"))
+Maintainer: Justin Landis <jtlandis314@gmail.com>
 Description: The measureR package provides the user the ability to create numeric vectors that are aware of their measurement units. These objects will behave like normal numeric vectors with standard arethmetic.
-License: What license is it under?
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Suggests: 
@@ -18,10 +18,13 @@ Collate:
     'measure.R'
     'Constructor.R'
     'arithmetic.R'
+    'temperatures.R'
+    'meter.R'
+    'foot.R'
     'ounce.R'
     'gram.R'
     'convert.R'
     'helpers.R'
     'logical_func.R'
-    'meter.R'
+    'second.R'
     'unit_types.R'
