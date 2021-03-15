@@ -1,57 +1,51 @@
-#' @include aaa-base_classes.R measure.R UnitList.R
 
-setClass("Gram", contains = c("Weight"))
-setMethod("initialize", "Gram",
-          function(.Object, ..., unit = "g"){
-            scale <- metric_scale(gsub("g$","",unit))
-            .Object <- callNextMethod(.Object, .Data = unit)
-            .Object@power <- 1
-            .Object@scale <- scale
-            .Object
-          })
-
+Gram <- function(unit = "g") {
+  scale <- metric_scale(gsub("g$","", unit))
+  us <- push_class(UnitSystem(unit, power = 1, scale), c("Gram","Weight"))
+  UnitType("Weight", us)
+}
 
 #' @export
-gram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "g")
+gram <- function(x = double()) measure(x = x, unit_type = Gram("g"))
 #' @export
-dagram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "dag")
+dagram <- function(x = double()) measure(x = x, unit_type = Gram("dag"))
 #' @export
-hgram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "hg")
+hgram <- function(x = double()) measure(x = x, unit_type = Gram("hg"))
 #' @export
-kgram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "kg")
+kgram <- function(x = double()) measure(x = x, unit_type = Gram("kg"))
 #' @export
-Mgram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "Mg")
+Mgram <- function(x = double()) measure(x = x, unit_type = Gram("Mg"))
 #' @export
-Ggram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "Gg")
+Ggram <- function(x = double()) measure(x = x, unit_type = Gram("Gg"))
 #' @export
-Tgram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "Tg")
+Tgram <- function(x = double()) measure(x = x, unit_type = Gram("Tg"))
 #' @export
-Pgram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "Pg")
+Pgram <- function(x = double()) measure(x = x, unit_type = Gram("Pg"))
 #' @export
-Egram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "Eg")
+Egram <- function(x = double()) measure(x = x, unit_type = Gram("Eg"))
 #' @export
-Zgram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "Zg")
+Zgram <- function(x = double()) measure(x = x, unit_type = Gram("Zg"))
 #' @export
-Ygram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "Yg")
+Ygram <- function(x = double()) measure(x = x, unit_type = Gram("Yg"))
 #' @export
-dgram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "dg")
+dgram <- function(x = double()) measure(x = x, unit_type = Gram("dg"))
 #' @export
-cgram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "cg")
+cgram <- function(x = double()) measure(x = x, unit_type = Gram("cg"))
 #' @export
-mgram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "mg")
+mgram <- function(x = double()) measure(x = x, unit_type = Gram("mg"))
 #' @export
-ugram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "ug")
+ugram <- function(x = double()) measure(x = x, unit_type = Gram("ug"))
 #' @export
-ngram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "ng")
+ngram <- function(x = double()) measure(x = x, unit_type = Gram("ng"))
 #' @export
-pgram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "pg")
+pgram <- function(x = double()) measure(x = x, unit_type = Gram("pg"))
 #' @export
-fgram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "fg")
+fgram <- function(x = double()) measure(x = x, unit_type = Gram("fg"))
 #' @export
-agram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "ag")
+agram <- function(x = double()) measure(x = x, unit_type = Gram("ag"))
 #' @export
-zgram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "zg")
+zgram <- function(x = double()) measure(x = x, unit_type = Gram("zg"))
 #' @export
-ygram <- function(x) x %missing% Const_Weight(Class = "Gram", unit = "yg")
+ygram <- function(x = double()) measure(x = x, unit_type = Gram("yg"))
 
 

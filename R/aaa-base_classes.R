@@ -1,20 +1,105 @@
 
 #' @importFrom rlang warn abort
-#' @importFrom glue glue
-#' @importFrom purrr map map_lgl map2_lgl map2 reduce pluck map_chr map2_chr
+#' @importFrom glue glue glue_collapse
+#' @importFrom purrr map map_lgl map_dbl map2_lgl map2 reduce pluck map_chr map2_chr
+#' @import vctrs
 NULL
 
-#' Base Class characterizes the Unit label and how many of said label
-setClass("UnitSystem", contains = "character", slots = c(power = "numeric",
-                                                         scale = "numeric"))
-setMethod("initialize", "UnitSystem",
-          function(.Object, .Data = NA_character_, power = 0, scale = 1){
-            .Object@.Data <- .Data
-            .Object@power <- power
-            .Object@scale <- scale
-            .Object
-          })
+push_class <- function(x, class = character()){
+  vec_assert(class, ptype = character())
+  xclass <- class(x)
+  class(x) <- c(class, setdiff(xclass, class))
+  x
+}
 
+new_UnitSystem <- function(x = character(), power = 0, scale = 1){
+  vec_assert(x, character())
+  vec_assert(power, double(), 1L)
+  vec_assert(scale, double(), 1L)
+  n <- vec_size(x)
+  if(n>1L) abort("UnitSystem cannot have more than 1 unit.")
+  if(n==0L) {
+    x <- "cnst"
+  }
+  new_vctr(x, power = power, scale = scale, class = "UnitSystem")
+}
+
+UnitSystem <- function(x = character(), power = 0, scale = 1){
+  x <- vec_cast(x, character())
+  power <- vec_cast(power, double())
+  scale <- vec_cast(scale, double())
+  new_UnitSystem(x, power, scale)
+}
+
+vec_ptype2.UnitSystem.UnitSystem <- function(x, y, ...) stop_incompatible_type(x, y, ...,
+                                                                               message = "Two <UnitSystem> objects cannot be joined")
+
+vec_cast2 <- function(x, to, ...) UseMethod("vec_cast", to)
+vec_castt.UnitSystem <- function(x, to, ...) UseMethod("vec_cast.UnitSystem")
+vec_castt.UnitSystem.UnitSystem <- function(x, to, ...) x
+vec_castt.UnitSystem.default <- function(x, to, ...) vec_cast(x, to, ...)
+
+# #' @export
+# force_vec_cast <- function(x, to, ...) UseMethod("vec_cast", to)
+
+#' @method vec_cast UnitSystem
+#' @export
+vec_cast.UnitSystem <- function(x, to, ...) UseMethod("vec_cast.UnitSystem")
+#' @method vec_cast.UnitSystem UnitSystem
+#' @export
+vec_cast.UnitSystem.UnitSystem <- function(x, to, ...) x
+
+#
+#vec_cast.UnitSystem.UnitSystem <- function(x, to, ...) x
+#vec_cast.UnitSystem <- function(x, to, ...) UseMethod("vec_cast.UnitSystem")
+
+# #' @export
+# vec_cast.UnitSystem.character <- function(x, to, ...) UnitSystem(x, power = 1)
+
+assert_UnitSystem <- function(x) {
+  if(inherits(x, "UnitSystem")){
+    ptype <- UnitSystem(power = p(x), scale = s(x))
+  } else {
+    ptype <- UnitSystem()
+  }
+  class(x) <- class(ptype)
+  vec_assert(x, ptype)
+}
+
+cast_UnitSystem <- function(x) {
+  ptype <- if(inherits(x,"UnitSystem")){
+    UnitSystem(power = p(x), scale = s(x))
+  } else {
+    UnitSystem()
+  }
+  extra_class <- setdiff(class(x), class(ptype))
+  class(x) <- class(ptype)
+  cast <- vec_cast(x, ptype)
+  push_class(cast, extra_class)
+}
+
+
+new_UnitType <- function(Type = character(), unit = UnitSystem()){
+  assert_UnitSystem(unit)
+  vec_assert(Type, character())
+  type <- list()
+  if(vec_size(Type)==1L){
+    type[[Type]] <- unit
+  }
+  new_vctr(type, class = "UnitType")
+}
+
+UnitType <- function(Type = character(), unit = UnitSystem()){
+  #unit <- cast_UnitSystem(unit)
+  unit <- vec_cast2(unit, UnitSystem())
+  Type <- vec_cast(Type, character())
+  new_UnitType(Type, unit)
+}
+
+#' @export
+vec_cast.UnitType.UnitType <- function(x, to, ...){
+
+}
 
 metric_prefix <- c("",
                    "da","h","k","M","G","T","P","E","Z","Y",
@@ -33,10 +118,10 @@ metric_scale <- function(prefix){
 }
 
 
-setClass("Weight", contains = "UnitSystem")
-setClass("Distance", contains = "UnitSystem")
-setClass("Time", contains = "UnitSystem")
-setClass("Temperature", contains = "UnitSystem")
-setClass("LiquidVolume", contains = "UnitSystem")
-setClass("Energy", contains = "UnitSystem")
-setClass("Luminous", contains = "UnitSystem")
+# setClass("Weight", contains = "UnitSystem")
+# setClass("Distance", contains = "UnitSystem")
+# setClass("Time", contains = "UnitSystem")
+# setClass("Temperature", contains = "UnitSystem")
+# setClass("LiquidVolume", contains = "UnitSystem")
+# setClass("Energy", contains = "UnitSystem")
+# setClass("Luminous", contains = "UnitSystem")
