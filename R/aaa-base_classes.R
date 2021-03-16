@@ -35,19 +35,19 @@ vec_ptype2.UnitSystem.UnitSystem <- function(x, y, ...) stop_incompatible_type(x
                                                                                message = "Two <UnitSystem> objects cannot be joined")
 
 vec_cast2 <- function(x, to, ...) UseMethod("vec_cast", to)
-vec_castt.UnitSystem <- function(x, to, ...) UseMethod("vec_cast.UnitSystem")
-vec_castt.UnitSystem.UnitSystem <- function(x, to, ...) x
-vec_castt.UnitSystem.default <- function(x, to, ...) vec_cast(x, to, ...)
+vec_cast.UnitSystem <- function(x, to, ...) UseMethod("vec_cast.UnitSystem")
+vec_cast.UnitSystem.UnitSystem <- function(x, to, ...) x
+vec_cast.UnitSystem.default <- function(x, to, ...) vec_cast(x, to, ...)
 
 # #' @export
 # force_vec_cast <- function(x, to, ...) UseMethod("vec_cast", to)
 
-#' @method vec_cast UnitSystem
-#' @export
-vec_cast.UnitSystem <- function(x, to, ...) UseMethod("vec_cast.UnitSystem")
-#' @method vec_cast.UnitSystem UnitSystem
-#' @export
-vec_cast.UnitSystem.UnitSystem <- function(x, to, ...) x
+# #' @method vec_cast UnitSystem
+# #' @export
+# vec_cast.UnitSystem <- function(x, to, ...) UseMethod("vec_cast.UnitSystem")
+# #' @method vec_cast.UnitSystem UnitSystem
+# #' @export
+# vec_cast.UnitSystem.UnitSystem <- function(x, to, ...) x
 
 #
 #vec_cast.UnitSystem.UnitSystem <- function(x, to, ...) x
@@ -96,9 +96,11 @@ UnitType <- function(Type = character(), unit = UnitSystem()){
   new_UnitType(Type, unit)
 }
 
-#' @export
+vec_cast.UnitType <- function(x, to, ...) UseMethod("vec_cast.UnitType")
+vec_cast.UnitType.default <- function(x, to, ...) vec_cast(x, to, ...)
 vec_cast.UnitType.UnitType <- function(x, to, ...){
-
+  lgl <- map_lgl(x, function(.x){p(.x)!=0})
+  ut <- x[lgl]
 }
 
 metric_prefix <- c("",

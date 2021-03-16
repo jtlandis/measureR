@@ -50,8 +50,9 @@ multiply_measure_measure <- function(x,y) {
   if(length(uncomm_types)>0){
     unit(x)[uncomm_types] <- unit(y)[uncomm_types]
   }
+  lgl <- map_lgl(unit(x), function(.x){p(.x)!=0})
   vec_dat <- vec_data(x)*vec_data(y)
-  new_measure(vec_dat, unit(x))
+  new_measure(vec_dat, unit(x)[lgl])
 
 }
 
@@ -74,8 +75,9 @@ divide_measure_measure <- function(x,y) {
     })
     unit(x)[uncomm_types] <- unit(y)[uncomm_types]
   }
+  lgl <- map_lgl(unit(x), function(.x){p(.x)!=0})
   vec_dat <- vec_data(x)/vec_data(y)
-  new_measure(vec_dat, unit(x))
+  new_measure(vec_dat, unit(x)[lgl])
 
 }
 
