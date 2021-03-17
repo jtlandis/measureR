@@ -40,3 +40,5 @@ setClass("Temperature", contains = "UnitSystem")
 setClass("LiquidVolume", contains = "UnitSystem")
 setClass("Energy", contains = "UnitSystem")
 setClass("Luminous", contains = "UnitSystem")
+
+setClassUnion("NumericMeasure", members = c("Measure","numeric"))
