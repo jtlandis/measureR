@@ -37,22 +37,25 @@ setMethod("-", signature("numeric", "Measure"),
 
 setMethod("*", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            e1_info <- e1@info
-            e2_info <- e2@info
-            scale <- 1
-            commonslot <- intersect(names(e1_info), names(e2_info))
-            e2_unames <- names(e2_info)[!names(e2_info) %in% commonslot]
-            if(length(commonslot)>0) {
-              slots_build <- map2(e1_info[commonslot], e2_info[commonslot], `*`)
-              new_slots <- map(slots_build, pluck, 1)
-              scale <- reduce(map(slots_build, pluck, 2), `*`)
-              e1@info[commonslot] <- new_slots
+            e2 <- cast_measure(e2, e1) #common UnitSystems of e1 and e2 will be compatible
+            e1_names <- names(unit(e1))
+            e2_names <- names(unit(e2))
+            common_types <- intersect(e1_names, e2_names)
+            uncomm_types <- e2_names[!e2_names %in% common_types]
+            if(length(common_types)>0) {
+              unit(e1)[common_types] <- map2(unit(e1)[common_types], unit(e2)[common_types], function(a,b){
+                a@power <- a@power + b@power
+                a
+              })
             }
-            if(length(e2_unames)>0){
-              e1@info[e2_unames] <- e2@info[e2_unames]
+            if(length(uncomm_types)>0){
+              unit(e1)[uncomm_types] <- unit(e2)[uncomm_types]
             }
-            e1@.Data <- e1@.Data*e2@.Data*scale
+            lgl <- map_lgl(unit(e1), function(.x){.x@power!=0})
+            e1@info <- e1@info[lgl]
+            e1@.Data <- e1@.Data*e2@.Data
             e1
+
           })
 setMethod("*", signature("Measure", "numeric"),
           function(e1, e2){
@@ -87,23 +90,25 @@ setMethod("*", signature(e1 = "UnitSystem", e2 = "UnitSystem"),
 
 setMethod("/", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            e1_info <- e1@info
-            e2_info <- e2@info
-            e2_info <- map(e2_info, function(x){x@power <- x@power*-1; x})
-            scale <- 1
-            commonslot <- intersect(names(e1_info), names(e2_info))
-            e2_unames <- names(e2_info)[!names(e2_info) %in% commonslot]
-            if(length(commonslot)>0) {
-              slots_build <- map2(e1_info[commonslot], e2_info[commonslot], `*`)
-              new_slots <- map(slots_build, pluck, 1)
-              scale <- reduce(map(slots_build, pluck, 2), `*`)
-              e1@info[commonslot] <- new_slots
+            e2 <- cast_measure(e2, e1) #common UnitSystems of e1 and e2 will be compatible
+            e1_names <- names(unit(e1))
+            e2_names <- names(unit(e2))
+            common_types <- intersect(e1_names, e2_names)
+            uncomm_types <- e2_names[!e2_names %in% common_types]
+            if(length(common_types)>0) {
+              unit(e1)[common_types] <- map2(unit(e1)[common_types], unit(e2)[common_types], function(a,b){
+                a@power <- a@power - b@power
+                a
+              })
             }
-            if(length(e2_unames)>0){
-              e1@info[e2_unames] <- e2_info[e2_unames]
+            if(length(uncomm_types)>0){
+              unit(e1)[uncomm_types] <- unit(e2)[uncomm_types]
             }
-            e1@.Data <- e1@.Data/(e2@.Data*scale)
+            lgl <- map_lgl(unit(e1), function(.x){.x@power!=0})
+            e1@info <- e1@info[lgl]
+            e1@.Data <- e1@.Data/e2@.Data
             e1
+
           })
 setMethod("/", signature("Measure", "numeric"),
           function(e1, e2){
