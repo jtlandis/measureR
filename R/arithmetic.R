@@ -2,12 +2,7 @@
 
 setMethod("+", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            if(!convertable(e1, e2)||!identical_powers(e1, e2)){
-              abort(glue("Cannot add {getUnit(e1)} and {getUnit(e2)}. Measures must be of the same type and power."))
-            }
-            if(!identical_measures(e1, e2)){
-              e2 <- convert(e2, e1)
-            }
+            e2 <- cast_measure(e2, e1, non_similar_error = TRUE)
             e1@.Data <- e1@.Data + e2@.Data
             e1
           })
@@ -24,12 +19,7 @@ setMethod("+", signature("numeric", "Measure"),
 
 setMethod("-", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            if(!convertable(e1, e2)||!identical_powers(e1, e2)){
-              abort(glue("Cannot subtract {getUnit(e1)} and {getUnit(e2)}. Measures must be of the same type and power."))
-            }
-            if(!identical_measures(e1, e2)){
-              e2 <- convert(e2, e1)
-            }
+            e2 <- cast_measure(e2, e1, non_similar_error = TRUE)
             e1@.Data <- e1@.Data - e2@.Data
             e1
           })

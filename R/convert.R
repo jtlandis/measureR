@@ -3,17 +3,7 @@
 setGeneric("convert", valueClass = c("Measure","list"), function(object, to) standardGeneric("convert"))
 setMethod("convert", signature("Measure","Measure"),
           function(object, to){
-            e1_info <- object@info
-            e2_info <- to@info
-            #find common slots
-            commonslot <- intersect(names(e1_info), names(e2_info))
-            object <- reduce(c(list(object), e2_info[commonslot]), convert)
-            # slots_build <- map2(e1_info[commonslot], e2_info[commonslot], convert)
-            # new_slots <- map(slots_build, pluck, 1)
-            # conversion_factors <- reduce(map(slots_build, pluck, 2), `*`)
-            # object@info[commonslot] <- new_slots
-            # object@.Data <- object@.Data*conversion_factors
-            object
+            cast_measure(object, to, no_common_error = TRUE)
           })
 setMethod("convert", signature("UnitSystem","UnitSystem"),
           function(object, to){

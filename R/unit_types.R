@@ -28,22 +28,6 @@ setMethod("getUnit", signature = "Measure",
             paste0(numer_, denom_)
           })
 
-setGeneric("setInfo<-", function(object, update, value) standardGeneric("setInfo<-"))
-setReplaceMethod("setInfo",
-                 signature("Measure", "logical", "UnitList"),
-                 function(object, update = T, value) {
-                   v_names <- names(value)
-                   if(is.null(v_names)) {
-                     v_names <- whichUnitSystemClass(value)
-                   }
-                   if(!update) {
-                     notv_names <- names(object@info)[!names(object@info)%in% v_names]
-                     object@info[notv_names] <- NULL
-                     object@info[v_names] <- value
-                   } else {
-                     object@info[v_names] <- value
-                   }
-                   object
-                 })
+
 
 
