@@ -35,6 +35,13 @@ setValidity("UnitList",
               return(TRUE)
             })
 
+as_UnitList <- function(x){
+  eval(as.call(x = c(
+    list(sym("new"), "UnitList"),
+    x
+  )))
+}
+
 setGeneric("whichUnitSystemClass", valueClass = "character", function(object) standardGeneric("whichUnitSystemClass"))
 setMethod("whichUnitSystemClass",
           signature("UnitList"),

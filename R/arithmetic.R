@@ -121,8 +121,7 @@ setMethod("/", signature("Measure", "numeric"),
           })
 setMethod("/", signature("numeric", "Measure"),
           function(e1, e2){
-            e2_info <- map(e2@info, function(x){x@power <- x@power*-1; x})
-            e2@info[names(e2_info)] <- e2_info
+            unit(e2) <- as_UnitList(map(e2@info, function(x){x@power <- x@power*-1; x}))
             e2@.Data <- e1/e2@.Data
             e2
           })
@@ -151,7 +150,7 @@ setMethod("/", signature("numeric", "Measure"),
 setMethod("^", signature("Measure", "numeric"),
           function(e1, e2){
             if(length(e2)!=1) abort("length of exponent must be 1.")
-            unit(e1) <- map2(unit(e1), e2, function(x,y){x@power <- x@power*y; x})
+            unit(e1) <- as_UnitList(map2(unit(e1), e2, function(x,y){x@power <- x@power*y; x}))
             e1@.Data <- e1@.Data^e2
             e1
           })
