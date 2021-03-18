@@ -16,6 +16,10 @@ setMethod("initialize", "Measure",
             .Object
           })
 
+setMethod("c", "Measure",
+          function(x, ..., recursive){
+            elements <- list(...)
+          })
 
 setMethod("show", "Measure",
           function(object){
