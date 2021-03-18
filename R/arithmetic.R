@@ -102,6 +102,10 @@ setMethod("/", signature(e1 = "Measure", e2 = "Measure"),
               })
             }
             if(length(uncomm_types)>0){
+              unit(e2)[uncomm_types] <- map(unit(e2)[uncomm_types], function(a){
+                a@power <- -1*a@power
+                a
+              })
               unit(e1)[uncomm_types] <- unit(e2)[uncomm_types]
             }
             lgl <- map_lgl(unit(e1), function(.x){.x@power!=0})
@@ -147,9 +151,7 @@ setMethod("/", signature("numeric", "Measure"),
 setMethod("^", signature("Measure", "numeric"),
           function(e1, e2){
             if(length(e2)!=1) abort("length of exponent must be 1.")
-            new_slots <- e1@info
-            new_slots <- map2(new_slots, e2, function(x,y){x@power <- x@power*y; x})
-            e1@info[names(new_slots)] <- new_slots
+            unit(e1) <- map2(unit(e1), e2, function(x,y){x@power <- x@power*y; x})
             e1@.Data <- e1@.Data^e2
             e1
           })
