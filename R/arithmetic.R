@@ -52,7 +52,7 @@ setMethod("*", signature(e1 = "Measure", e2 = "Measure"),
               unit(e1)[uncomm_types] <- unit(e2)[uncomm_types]
             }
             lgl <- map_lgl(unit(e1), function(.x){.x@power!=0})
-            e1@info <- e1@info[lgl]
+            e1@info <- as_UnitList(e1@info[lgl])
             e1@.Data <- e1@.Data*e2@.Data
             e1
 
@@ -109,7 +109,7 @@ setMethod("/", signature(e1 = "Measure", e2 = "Measure"),
               unit(e1)[uncomm_types] <- unit(e2)[uncomm_types]
             }
             lgl <- map_lgl(unit(e1), function(.x){.x@power!=0})
-            e1@info <- e1@info[lgl]
+            e1@info <- as_UnitList(e1@info[lgl])
             e1@.Data <- e1@.Data/e2@.Data
             e1
 

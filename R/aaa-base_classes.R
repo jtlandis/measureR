@@ -1,5 +1,5 @@
 
-#' @importFrom rlang warn abort
+#' @importFrom rlang warn abort sym
 #' @importFrom glue glue
 #' @importFrom purrr map map_lgl map2_lgl map2 reduce pluck map_chr map2_chr
 NULL
@@ -41,4 +41,4 @@ setClass("LiquidVolume", contains = "UnitSystem")
 setClass("Energy", contains = "UnitSystem")
 setClass("Luminous", contains = "UnitSystem")
 
-setClassUnion("NumericMeasure", members = c("Measure","numeric"))
+

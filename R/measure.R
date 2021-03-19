@@ -5,6 +5,7 @@ measure <- setClass("Measure",
                     contains = "numeric",
                     slots = c(info = "UnitList")
                     )
+setClassUnion("NumericMeasure", members = c("Measure","numeric"))
 setMethod("initialize", "Measure",
           function(.Object,
                    .Data = 1,
