@@ -1,7 +1,7 @@
 
 #' @importFrom rlang warn abort sym
 #' @importFrom glue glue
-#' @importFrom purrr map map_lgl map2_lgl map2 reduce pluck map_chr map2_chr
+#' @importFrom purrr map map_lgl map2_lgl map2 reduce pluck map_chr map2_chr accumulate
 NULL
 
 #' Base Class characterizes the Unit label and how many of said label

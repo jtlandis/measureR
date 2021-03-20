@@ -56,7 +56,7 @@ units2convert <- function(x, y,
   to_convert <- !map2_lgl(x_unit[common_names], y_unit[common_names], identical)
   if(non_identical_error){
     #require setequal==TRUE and all elements are identical. i.e. sum(to_convert)==0
-    if(!setequal(names(x_unit),names(y_unit))&&sum(to_convert)>0){
+    if(!setequal(names(x_unit),names(y_unit))||sum(to_convert)>0){
       incompatible_measures(x, y, requirement = "identical", ...)
     }
   }
@@ -83,7 +83,7 @@ incompatible_measures <- function(x,y, unable = c("convert","combine"),
   abort(glue("Can't {unable} <Measure {getUnit(x)}> ",
              "to <Measure {getUnit(y)}>.\n",
              "Each <Measure> requires {requirement} Unit Types:\n",
-             "..1 = {paste0(names(x@info)),collapse = ', ')}\n",
-             "..2 = {paste0(names(y@info)),collapse = ', ')}\n"))
+             "..1 = {paste0(names(x@info),collapse = ', ')}\n",
+             "..2 = {paste0(names(y@info),collapse = ', ')}\n"))
 
 }
