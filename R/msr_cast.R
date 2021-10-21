@@ -10,7 +10,7 @@ setMethod("msr_cast", signature("Measure", "UnitSystem"),
             if(is.null(ref) || ref@power==0 || ref@.Data == "cnst"){
               stop("No preexisting <",type,"> Class on object.", call. = F)
             }
-            object@.Data <- object@.Data*conversion(ref, to)
+            object@.Data <- convert(object@.Data, ref, to)
             to@power <- ref@power
             object@unit[[type]] <- to
             object
@@ -35,50 +35,50 @@ setMethod("msr_cast", signature("Measure","Measure"),
           })
 
 
-setGeneric("conversion", valueClass = "numeric", function(object, to, x) standardGeneric("conversion"))
-setMethod("conversion", signature("Ounce","Gram", "missing"),
-          function(object, to, x){
-            (object@scale^object@power)*((28.3495/to@scale)^object@power)
+setGeneric("convert", valueClass = "numeric", function(x, from, to) standardGeneric("convert"))
+setMethod("convert", signature("numeric","Ounce","Gram"),
+          function(x, from, to){
+            (from@scale^from@power)*((28.3495/to@scale)^from@power)
           })
-setMethod("conversion", signature("Gram","Ounce", "missing"),
-          function(object, to, x){
-            (object@scale^object@power)*((0.035274/to@scale)^object@power)
+setMethod("convert", signature("numeric","Gram","Ounce"),
+          function(x, from, to){
+            (from@scale^from@power)*((0.035274/to@scale)^from@power)
           })
-setMethod("conversion", signature("Foot", "Meter", "missing"),
-          function(object, to, x){
-            (object@scale^object@power)*((.3048/to@scale)^object@power)
+setMethod("convert", signature("numeric","Foot", "Meter"),
+          function(x, from, to){
+            (from@scale^from@power)*((.3048/to@scale)^from@power)
           })
-setMethod("conversion", signature("Meter", "Foot", "missing"),
-          function(object, to, x){
-            (object@scale^object@power)*((3.28084/to@scale)^object@power)
-          })
-
-setMethod("conversion", signature("UnitSystem", "UnitSystem", "missing"),
-          function(object, to, x){
-            (object@scale^object@power)/(to@scale^object@power)
+setMethod("convert", signature("numeric","Meter", "Foot"),
+          function(x, from, to){
+            (from@scale^from@power)*((3.28084/to@scale)^from@power)
           })
 
-setMethod("conversion", signature("Celsius", "Kelvin", "numeric"),
-          function(object, to, x){
-            ((x^(1/object@power))+273.16)^object@power
+setMethod("convert", signature("numeric", "UnitSystem", "UnitSystem"),
+          function(x, from, to){
+            (from@scale^from@power)/(to@scale^from@power)
           })
-setMethod("conversion", signature("Kelvin", "Celsius", "numeric"),
-          function(object, to, x){
-            ((x^(1/object@power))-273.16)^object@power
+
+setMethod("convert", signature("numeric", "Celsius", "Kelvin"),
+          function(x, from, to){
+            ((data^(1/from@power))+273.16)^from@power
           })
-setMethod("conversion", signature("Celsius", "Fahrenheit", "numeric"),
-          function(object, to, x){
-            (((9/5)*(x^(1/object@power)))+32)^object@power
+setMethod("convert", signature("numeric", "Kelvin", "Celsius"),
+          function(x, from, to){
+            ((data^(1/from@power))-273.16)^from@power
           })
-setMethod("conversion", signature("Fahrenheit", "Celsius", "numeric"),
-          function(object, to, x){
+setMethod("convert", signature("numeric", "Celsius", "Fahrenheit"),
+          function(x, from, to){
+            (((9/5)*(x^(1/from@power)))+32)^from@power
+          })
+setMethod("convert", signature("numeric", "Fahrenheit", "Celsius"),
+          function(x, from, to){
             ((5/9)*(x^(1/object@power)-32))^object@power
           })
-setMethod("conversion", signature("Fahrenheit", "Kelvin", "numeric"),
-          function(object, to, x){
+setMethod("convert", signature("numeric", "Fahrenheit", "Kelvin"),
+          function(x, from, to){
             (((5/9)*(x^(1/object@power)-32))+273.16)^object@power
           })
-setMethod("conversion", signature("Kelvin", "Fahrenheit", "numeric"),
-          function(object, to, x){
+setMethod("convert", signature("numeric", "Kelvin", "Fahrenheit"),
+          function(x, from, to){
             (((9/5)*(x^(1/object@power)-273.16))+32)^object@power
           })
