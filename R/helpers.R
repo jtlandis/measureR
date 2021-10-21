@@ -9,6 +9,8 @@
 
 }
 
+verify_type_slot <- function(x) if(is.na(x@type)) stop("Attempted to access an undefined <UnitSystem> `type` slot.") else x@type
+
 UnitSlots <- c("Weight","Distance","Time","Temperature")
 
 #' @export
