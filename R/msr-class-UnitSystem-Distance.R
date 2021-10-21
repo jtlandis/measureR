@@ -107,3 +107,46 @@ ymeter <- function(x) {
   msr_cast(x, new("Meter", unit = "ym"))
 }
 
+
+foot_scale <- function(x){
+  switch(x, ft = 1,  yd = 3, ch = 66, fur = 660, mi = 5280, `in` = 1/12, th = 1/12000)
+}
+setClass("Foot", contains = c("Distance"))
+setMethod("initialize", "Foot",
+          function(.Object, ..., unit = "ft"){
+            scale <- foot_scale(unit)
+            .Object <- callNextMethod(.Object, .Data = unit, scale = scale, power = 1)
+            .Object
+          })
+
+
+#' @export
+foot <- function(x) {
+  msr_cast(x, new("Foot", unit = "ft"))
+}
+#' @export
+yard <- function(x) {
+  msr_cast(x, new("Foot", unit = "yd"))
+}
+#' @export
+chain <- function(x) {
+  msr_cast(x, new("Foot", unit = "ch"))
+}
+#' @export
+furlong <- function(x) {
+  msr_cast(x, new("Foot", unit = "fur"))
+}
+#' @export
+mile <- function(x) {
+  msr_cast(x, new("Foot", unit = "mi"))
+}
+#' @export
+inch <- function(x) {
+  msr_cast(x, new("Foot", unit = "in"))
+}
+#' @export
+thou <- function(x) {
+  msr_cast(x, new("Foot", unit = "th"))
+}
+
+
