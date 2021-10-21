@@ -10,11 +10,6 @@ setMethod("initialize", "Weight",
             .Object
           })
 
-setMethod("msr_cast", signature("numeric", "Weight"),
-          function(object, to) {
-            new("Measure", .Data = object, unit = UnitList(Weight = to))
-          })
-
 
 setClass("Gram", contains = "Weight")
 setMethod("initialize", "Gram",

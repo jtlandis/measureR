@@ -34,37 +34,46 @@ setMethod("msr_cast", signature("Measure","Measure"),
 
           })
 
+setMethod("msr_cast", signature("numeric", "Weight"),
+          function(object, to) {
+            new("Measure", .Data = object, unit = UnitList(Weight = to))
+          })
+setMethod("msr_cast", signature("numeric", "Distance"),
+          function(object, to) {
+            new("Measure", .Data = object, unit = UnitList(Distance = to))
+          })
 
 setGeneric("convert", valueClass = "numeric", function(x, from, to) standardGeneric("convert"))
 setMethod("convert", signature("numeric","Ounce","Gram"),
           function(x, from, to){
-            (from@scale^from@power)*((28.3495/to@scale)^from@power)
+            x*(from@scale^from@power)*((28.3495/to@scale)^from@power)
           })
 setMethod("convert", signature("numeric","Gram","Ounce"),
           function(x, from, to){
-            (from@scale^from@power)*((0.035274/to@scale)^from@power)
+            x*(from@scale^from@power)*((0.035274/to@scale)^from@power)
           })
 setMethod("convert", signature("numeric","Foot", "Meter"),
           function(x, from, to){
-            (from@scale^from@power)*((.3048/to@scale)^from@power)
+            x*(from@scale^from@power)*((.3048/to@scale)^from@power)
           })
 setMethod("convert", signature("numeric","Meter", "Foot"),
           function(x, from, to){
-            (from@scale^from@power)*((3.28084/to@scale)^from@power)
+            x*(from@scale^from@power)*((3.28084/to@scale)^from@power)
           })
 
 setMethod("convert", signature("numeric", "UnitSystem", "UnitSystem"),
           function(x, from, to){
-            (from@scale^from@power)/(to@scale^from@power)
+            if (identical(from, to)) return(x)
+            x*(from@scale^from@power)/(to@scale^from@power)
           })
 
 setMethod("convert", signature("numeric", "Celsius", "Kelvin"),
           function(x, from, to){
-            ((data^(1/from@power))+273.16)^from@power
+            ((x^(1/from@power))+273.16)^from@power
           })
 setMethod("convert", signature("numeric", "Kelvin", "Celsius"),
           function(x, from, to){
-            ((data^(1/from@power))-273.16)^from@power
+            ((x^(1/from@power))-273.16)^from@power
           })
 setMethod("convert", signature("numeric", "Celsius", "Fahrenheit"),
           function(x, from, to){

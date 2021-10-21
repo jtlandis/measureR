@@ -2,7 +2,10 @@
 
 setMethod("+", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            e2 <- cast_measure(e2, e1, non_similar_error = TRUE)
+            if (setdiff(names(e1@unit), names(e2@unit))>1) {
+              stop("Cannot add unidentical Measures together", call. = F)
+            }
+            e2 <- msr_cast(e2, e1)
             e1@.Data <- e1@.Data + e2@.Data
             e1
           })
@@ -19,7 +22,10 @@ setMethod("+", signature("numeric", "Measure"),
 
 setMethod("-", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            e2 <- cast_measure(e2, e1, non_similar_error = TRUE)
+            if (setdiff(names(e1@unit), names(e2@unit))>1) {
+              stop("Cannot subtract unidentical Measures together", call. = F)
+            }
+            e2 <- msr_cast(e2, e1)
             e1@.Data <- e1@.Data - e2@.Data
             e1
           })
@@ -68,25 +74,25 @@ setMethod("*", signature("numeric", "Measure"),
             e2
           })
 
-setMethod("*", signature(e1 = "UnitSystem", e2 = "UnitSystem"),
-          function(e1, e2){
-            scale <- 1
-            e1_active <- is_active(e1)
-            e2_active <- is_active(e2)
-            if(e1_active&&
-               e2_active&&
-               !identical_measures(e1, e2)){
-              scale <- conversion(e2, e1)
-            }
-            if(e1_active){ #e1's UnitSystem is used as reference
-              e1@power <- e1@power + e2@power
-              return(list(e1, scale))
-            } else if(e2_active){
-              return(list(e2, scale))
-            }
-            return(list(e1, scale))
-
-          })
+# setMethod("*", signature(e1 = "UnitSystem", e2 = "UnitSystem"),
+#           function(e1, e2){
+#             scale <- 1
+#             e1_active <- is_active(e1)
+#             e2_active <- is_active(e2)
+#             if(e1_active&&
+#                e2_active&&
+#                !identical_measures(e1, e2)){
+#               scale <- convert(e2, e1)
+#             }
+#             if(e1_active){ #e1's UnitSystem is used as reference
+#               e1@power <- e1@power + e2@power
+#               return(list(e1, scale))
+#             } else if(e2_active){
+#               return(list(e2, scale))
+#             }
+#             return(list(e1, scale))
+#
+#           })
 
 setMethod("/", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
@@ -134,7 +140,7 @@ setMethod("/", signature("numeric", "Measure"),
 #             if(e1_active&&
 #                e2_active&&
 #                !identical_measures(e1, e2)){
-#               scale <- conversion(e2, e1)
+#               scale <- convert(e2, e1)
 #             }
 #             if(e1_active){ #e1's UnitSystem is used as reference
 #               e1@power <- e1@power - e2@power

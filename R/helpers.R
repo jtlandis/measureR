@@ -9,14 +9,14 @@ UnitSlots <- c("Weight","Distance","Time","Temperature")
 setGeneric("unit", function(object) standardGeneric("unit"))
 setMethod("unit", signature("Measure"),
             function(object){
-             object@info
+             object@unit
            })
 #' @export
 setGeneric("unit<-", function(object, value) standardGeneric("unit<-"))
 setReplaceMethod("unit",
                  signature("Measure", "UnitList"),
                  function(object, value){
-                   object@info <- value
+                   object@unit <- value
                    invisible(object)
                  })
 
@@ -77,8 +77,8 @@ incompatible_measures <- function(x,y, unable = c("convert","combine"),
   abort(glue("Can't {unable} <Measure {getUnit(x)}> ",
              "to <Measure {getUnit(y)}>.\n",
              "Each <Measure> requires {requirement} Unit Types:\n",
-             "..1 = {paste0(names(x@info),collapse = ', ')}\n",
-             "..2 = {paste0(names(y@info),collapse = ', ')}\n"))
+             "..1 = {paste0(names(x@unit),collapse = ', ')}\n",
+             "..2 = {paste0(names(y@unit),collapse = ', ')}\n"))
 
 }
 
@@ -114,12 +114,12 @@ setMethod("getUnit", signature = "UnitSystem",
           })
 setMethod("getUnit", signature = "Measure",
           function(object){
-            info <- object@info
+            info <- object@unit
             if(length(info)==0||sum(map_lgl(info, is_active))==0) return("constant")
             o_unit <- map_chr(info, function(x){
               paste0(x@.Data,ifelse(abs(x@power)==1, "", paste0("^",abs(x@power))))
             })
-            numerator <- map_lgl(info, ~.x@power>0)
+            numerator <- map_lgl(info, function(.x) .x@power>0)
             numer_ <- ifelse(sum(numerator)>0, paste0("(",o_unit[numerator],")", collapse = "*"), "1")
             denom_ <- ifelse(sum(!numerator)>0,paste0("/",paste0("(",o_unit[!numerator],")",collapse = "*")), "")
             paste0(numer_, denom_)

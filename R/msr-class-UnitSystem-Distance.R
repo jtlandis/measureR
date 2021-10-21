@@ -8,10 +8,6 @@ setMethod("initialize", "Distance",
             .Object
           })
 
-setMethod("msr_cast", signature("numeric", "Distance"),
-          function(object, to) {
-            new("Measure", .Data = object, unit = UnitList(Distance = to))
-          })
 
 setClass("Meter", contains = c("Distance"))
 setMethod("initialize", "Meter",
