@@ -1,13 +1,5 @@
 
-#' @importFrom rlang call_args
-"%missing%" <- function(x, f){
-  if(missing(x)) return(f)
-  Call <- match.call()
-  f_args <- call_args(Call[[3L]])
-  result <- eval.parent(as.call(c(list(Call[[3L]][[1L]], x), f_args)))
-  return(result)
 
-}
 
 verify_type_slot <- function(x) if(is.na(x@type)) stop("Attempted to access an undefined <UnitSystem> `type` slot.") else x@type
 
@@ -89,3 +81,20 @@ incompatible_measures <- function(x,y, unable = c("convert","combine"),
              "..2 = {paste0(names(y@info),collapse = ', ')}\n"))
 
 }
+
+metric_prefix <- c("",
+                   "da","h","k","M","G","T","P","E","Z","Y",
+                   "d","c","m","u","n","p","f","a","z","y")
+metric_scale <- function(prefix){
+  if(!is.element(prefix, metric_prefix)){
+    abort(glue("Metric Class must be initialized with one of",
+               " {paste0(\"\\\"\",metric_prefix,\"\\\"\", collapse = \", \")}"))
+  }
+  10^(switch(prefix,
+             da = 1L,h = 2L,k = 3L, M = 6L, G = 9L,
+             `T` = 12L, P = 15L, E = 18L, Z= 21L, Y = 24L,
+             d = -1L, c = -2L, m = -3L, u = -6L, n = -9L,
+             p = -12L, f = -15L, a = -18L, z = -21L, y = -24L,
+             0L))
+}
+
