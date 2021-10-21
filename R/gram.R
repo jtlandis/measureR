@@ -1,14 +1,14 @@
 
 Gram <- function(unit = "g") {
   scale <- metric_scale(gsub("g$","", unit))
-  us <- push_class(UnitSystem(unit, power = 1, scale), c("Gram","Weight"))
-  UnitType("Weight", us)
+  us <- UnitSystem(unit, power = 1, scale, subclass = c("Gram","Weight"))
+  UnitList("Weight", us)
 }
 
 #' @export
-gram <- function(x = double()) measure(x = x, unit_type = Gram("g"))
+gram <- function(x = double()) measure(x = x, unit = Gram("g"))
 #' @export
-dagram <- function(x = double()) measure(x = x, unit_type = Gram("dag"))
+dagram <- function(x = double()) measure(x = x, unit= Gram("dag"))
 #' @export
 hgram <- function(x = double()) measure(x = x, unit_type = Gram("hg"))
 #' @export

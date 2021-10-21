@@ -1,3 +1,19 @@
+
+ounce_scale <- function(x){
+  switch(x, oz = 1, lb = 16, dr = 1/16, ton = 32000)
+}
+Ounce <- function(unit = "oz") {
+  scale <- ounce_scale(unit)
+  us <- UnitSystem(unit, power = 1, scale, subclass = c("Ounce","Weight"))
+  UnitList("Weight", us)
+}
+
+#' @export
+ounce <- function(x = double()) measure(x = x, unit = Ounce("oz"))
+#' @export
+pound <- function(x = double()) measure(x = x, unit = Ounce("lb"))
+
+
 #
 #
 # ounce_scale <- function(x){

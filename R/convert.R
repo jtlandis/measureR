@@ -19,6 +19,14 @@ conversion <- function(from, to, x) UseMethod("conversion", to)
 conversion.UnitSystem <- function(from, to, x) UseMethod("conversion.UnitSystem")
 conversion.UnitSystem.UnitSystem <- function(from, to, x){ x*(s(from)^p(from))/(s(to)^p(from))}
 
+conversion.Ounce <- function(from, to, x) UseMethod("conversion.Ounce")
+conversion.Ounce.Gram <- function(from, to, x) { x*(s(from)^p(from))*((.035274/s(to))^p(to))}
+conversion.Ounce.UnitSystem <- conversion.UnitSystem.UnitSystem
+
+conversion.Gram <- function(from, to, x) UseMethod("conversion.Gram")
+conversion.Gram.Ounce <- function(from, to, x) { x*(s(from)^p(from))*((28.3495/s(to))^p(to))}
+conversion.Gram.UnitSystem <- conversion.UnitSystem.UnitSystem
+
 # setGeneric("conversion", valueClass = "numeric", function(object, to, x) standardGeneric("conversion"))
 # setMethod("conversion", signature("Ounce","Gram", "missing"),
 #           function(object, to, x){
