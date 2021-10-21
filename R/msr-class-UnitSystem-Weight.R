@@ -3,12 +3,16 @@
 
 
 setClass("Weight", contains = "UnitSystem")
-
 setMethod("initialize", "Weight",
           function(.Object, ...) {
             .Object <- callNextMethod(.Object, ...)
             .Object@type <- "Weight"
             .Object
+          })
+
+setMethod("msr_cast", signature("numeric", "Weight"),
+          function(object, to) {
+            new("Measure", .Data = object, unit = UnitList(Weight = to))
           })
 
 
@@ -31,10 +35,7 @@ dagram <- function(x = double()) {
 
 
 
-setMethod("msr_cast", signature("numeric", "Weight"),
-           function(object, to) {
-             new("Measure", .Data = object, unit = UnitList(Weight = to))
-           })
+
 
 
 
