@@ -40,4 +40,3 @@ UnitSystem <- function(unit = "cnst", power = 0, scale = 1) {
 }
 
 
-is_UnitSystem <- function(x) is(x, "UnitSystem")
