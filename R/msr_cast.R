@@ -1,4 +1,4 @@
-#' @include msr-class-UnitSystem-Weight.R
+#' @include msr-class-UnitSystem-Weight.R msr-class-UnitSystem-Distance.R
 
 
 setGeneric("msr_cast", valueClass = "Measure", function(object, to) standardGeneric("msr_cast"))
