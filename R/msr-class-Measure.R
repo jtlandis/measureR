@@ -2,7 +2,8 @@
 #'
 NULL
 
-setClass("Measure", contains = "numeric", slots = c(unit = "UnitList"))
+setClassUnion("Number", members = c("integer","numeric"))
+setClass("Measure", contains = "Number", slots = c(unit = "UnitList"))
 setMethod("initialize", "Measure",
           function(.Object, .Data = double(), unit = UnitList()) {
             .Object@.Data <- .Data

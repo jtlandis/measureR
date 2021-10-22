@@ -8,6 +8,19 @@ setMethod("initialize", "UnitList",
             validObject(.Object)
             .Object
           })
+
+setMethod("[", signature("UnitList", "ANY"),
+          function(x, i) {
+            if (is.character(i))
+              i <- match(i, names(x))
+            x@.Data <- x@.Data[i]
+            x
+          })
+setMethod("[<-", signature("UnitList", "UnitList"),
+          function(.Object, value) {
+            .Object@.Data <- value
+            .Object
+          })
 setValidity("UnitList",
             function(object){
               if(length(object)==0) return(TRUE)

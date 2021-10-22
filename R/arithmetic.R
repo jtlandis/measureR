@@ -2,19 +2,17 @@
 
 setMethod("+", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            if (setdiff(names(e1@unit), names(e2@unit))>1) {
-              stop("Cannot add unidentical Measures together", call. = F)
-            }
+            req_all_similar_unit_types(e1, e2)
             e2 <- msr_cast(e2, e1)
             e1@.Data <- e1@.Data + e2@.Data
             e1
           })
-setMethod("+", signature("Measure", "numeric"),
+setMethod("+", signature("Measure", "Number"),
           function(e1, e2){
             e1@.Data <- e1@.Data+e2
             e1
           })
-setMethod("+", signature("numeric", "Measure"),
+setMethod("+", signature("Number", "Measure"),
           function(e1, e2){
             e2@.Data <- e1 + e2@.Data
             e2
@@ -22,19 +20,17 @@ setMethod("+", signature("numeric", "Measure"),
 
 setMethod("-", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            if (setdiff(names(e1@unit), names(e2@unit))>1) {
-              stop("Cannot subtract unidentical Measures together", call. = F)
-            }
+            req_all_similar_unit_types(e1, e2)
             e2 <- msr_cast(e2, e1)
             e1@.Data <- e1@.Data - e2@.Data
             e1
           })
-setMethod("-", signature("Measure", "numeric"),
+setMethod("-", signature("Measure", "Number"),
           function(e1, e2){
             e1@.Data <- e1@.Data-e2
             e1
           })
-setMethod("-", signature("numeric", "Measure"),
+setMethod("-", signature("Number", "Measure"),
           function(e1, e2){
             e2@.Data <- e1 - e2@.Data
             e2
@@ -43,32 +39,35 @@ setMethod("-", signature("numeric", "Measure"),
 
 setMethod("*", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            e2 <- cast_measure(e2, e1) #common UnitSystems of e1 and e2 will be compatible
-            e1_names <- names(unit(e1))
-            e2_names <- names(unit(e2))
+            e1_names <- names(e1@unit)
+            e2_names <- names(e2@unit)
             common_types <- intersect(e1_names, e2_names)
             uncomm_types <- e2_names[!e2_names %in% common_types]
             if(length(common_types)>0) {
-              unit(e1)[common_types] <- map2(unit(e1)[common_types], unit(e2)[common_types], function(a,b){
-                a@power <- a@power + b@power
-                a
+              e2 <- msr_cast(e2, e1)
+              e1@unit[common_types] <- map2(
+                e1@unit[common_types],
+                e2@unit[common_types],
+                function(a,b){
+                  a@power <- a@power + b@power
+                  a
               })
             }
             if(length(uncomm_types)>0){
-              unit(e1)[uncomm_types] <- unit(e2)[uncomm_types]
+              e1@unit[uncomm_types] <- e2@unit[uncomm_types]
             }
-            lgl <- map_lgl(unit(e1), function(.x){.x@power!=0})
-            e1@info <- as_UnitList(e1@info[lgl])
+            zero <- map_lgl(e1@unit, function(.x){.x@power==0})
+            e1@unit <- e1@unit[!zero]
             e1@.Data <- e1@.Data*e2@.Data
             e1
 
           })
-setMethod("*", signature("Measure", "numeric"),
+setMethod("*", signature("Measure", "Number"),
           function(e1, e2){
             e1@.Data <- e1@.Data*e2
             e1
           })
-setMethod("*", signature("numeric", "Measure"),
+setMethod("*", signature("Number", "Measure"),
           function(e1, e2){
             e2@.Data <- e2@.Data*e1
             e2
@@ -96,26 +95,31 @@ setMethod("*", signature("numeric", "Measure"),
 
 setMethod("/", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){
-            e2 <- cast_measure(e2, e1) #common UnitSystems of e1 and e2 will be compatible
-            e1_names <- names(unit(e1))
-            e2_names <- names(unit(e2))
+             #common UnitSystems of e1 and e2 will be compatible
+
+            e1_names <- names(e1@unit)
+            e2_names <- names(e2@unit)
             common_types <- intersect(e1_names, e2_names)
             uncomm_types <- e2_names[!e2_names %in% common_types]
             if(length(common_types)>0) {
-              unit(e1)[common_types] <- map2(unit(e1)[common_types], unit(e2)[common_types], function(a,b){
-                a@power <- a@power - b@power
-                a
+              e2 <- msr_cast(e2, e1)
+              e1@unit[common_types] <- map2(
+                e1@unit[common_types],
+                e2@unit[common_types],
+                function(a,b){
+                  a@power <- a@power - b@power
+                  a
               })
             }
             if(length(uncomm_types)>0){
-              unit(e2)[uncomm_types] <- map(unit(e2)[uncomm_types], function(a){
+              e2@unit[uncomm_types] <- map(e2@unit[uncomm_types], function(a){
                 a@power <- -1*a@power
                 a
               })
-              unit(e1)[uncomm_types] <- unit(e2)[uncomm_types]
+              e1@unit[uncomm_types] <- e2@unit[uncomm_types]
             }
-            lgl <- map_lgl(unit(e1), function(.x){.x@power!=0})
-            e1@info <- as_UnitList(e1@info[lgl])
+            lgl <- map_lgl(e1@unit, function(.x){.x@power!=0})
+            e1@unit <- e1@unit[lgl]
             e1@.Data <- e1@.Data/e2@.Data
             e1
 

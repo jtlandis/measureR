@@ -125,3 +125,13 @@ setMethod("getUnit", signature = "Measure",
             paste0(numer_, denom_)
           })
 
+req_all_similar_unit_types <- function(x, y) {
+  if (length(setdiff(names(x@unit), names(y@unit)))>1)
+    stop("All Unit Types on measures are not similar.", call. = F)
+  return(invisible(TRUE))
+}
+
+req_common_unit_types <- function(x, y) {
+  if (length(intersect(names(x@unit), names(y@unit)))==0)
+    stop("Measures do not have any common Unit Types.")
+}
