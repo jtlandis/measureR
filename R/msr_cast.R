@@ -1,4 +1,4 @@
-#' @include msr-class-UnitSystem-Weight.R msr-class-UnitSystem-Distance.R msr-class-UnitSystem-Time.R
+#' @include msr-class-UnitSystem-Weight.R msr-class-UnitSystem-Distance.R msr-class-UnitSystem-Time.R msr-class-UnitSystem-Temperature.R
 
 
 
@@ -37,11 +37,19 @@ setMethod("msr_cast", signature("Measure","Measure"),
 
 setMethod("msr_cast", signature("Number", "Weight"),
           function(object, to) {
-            new("Measure", .Data = as.double(object), unit = UnitList(Weight = to))
+            new("Measure", .Data = object, unit = UnitList(Weight = to))
           })
 setMethod("msr_cast", signature("Number", "Distance"),
           function(object, to) {
-            new("Measure", .Data = as.double(object), unit = UnitList(Distance = to))
+            new("Measure", .Data = object, unit = UnitList(Distance = to))
+          })
+setMethod("msr_cast", signature("Number", "Time"),
+          function(object, to) {
+            new("Measure", .Data = object, unit = UnitList(Time = to))
+          })
+setMethod("msr_cast", signature("Number", "Temperature"),
+          function(object, to) {
+            new("Measure", .Data = object, unit = UnitList(Temperature = to))
           })
 
 setGeneric("convert", valueClass = "Number", function(x, from, to) standardGeneric("convert"))
