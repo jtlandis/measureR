@@ -1,4 +1,4 @@
-#' @include msr-class-UnitSystem.R
+#' @include msr-class-UnitSystem-.R
 NULL
 
 setClass("UnitList", contains = "list")
@@ -16,11 +16,11 @@ setMethod("[", signature("UnitList", "ANY"),
             x@.Data <- x@.Data[i]
             x
           })
-setMethod("[<-", signature("UnitList", "UnitList"),
-          function(.Object, value) {
-            .Object@.Data <- value
-            .Object
-          })
+# setMethod("[<-", signature("UnitList", "UnitList"),
+#           function(.Object, value) {
+#             .Object@.Data <- value
+#             .Object
+#           })
 setValidity("UnitList",
             function(object){
               if(length(object)==0) return(TRUE)

@@ -1,4 +1,4 @@
-#' @include gram.R ounce.R foot.R meter.R temperatures.R
+
 
 # setGeneric("convert", valueClass = c("Measure","list"), function(object, to) standardGeneric("convert"))
 # setMethod("convert", signature("Measure","Measure"),

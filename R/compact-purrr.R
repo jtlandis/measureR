@@ -32,7 +32,7 @@ map2_impl <- function(.x, .y, .f, ..., .ptype) {
   out <- map2(.x, .y, .f, ...)
   out <- unlist(out, recursive = F)
   lgl <- length(out) == length(.x) && inherits(out, class(.ptype)[[1L]])
-  if (!lgl) stop(call. = F, "Each return value must be length 1L and class <", class(.ptype)[[1L]],">\n")
+  if (!lgl) abort(glue("Each return value must be length 1L and class <{class(.ptype)[[1L]]}>\n"), class = "measureR_map_failure")
   out
 }
 
@@ -43,4 +43,3 @@ map2_lgl <- function(.x, .y, .f, ...) {
 map2_chr <- function(.x, .y, .f, ...) {
   map2_impl(.x, .y, .f, ..., .ptype = character())
 }
-

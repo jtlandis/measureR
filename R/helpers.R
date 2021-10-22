@@ -1,7 +1,13 @@
 
 
 
-verify_type_slot <- function(x) if(is.na(x@type)) stop("Attempted to access an undefined <UnitSystem> `type` slot.") else x@type
+verify_type_slot <- function(x) {
+  if(is.na(x@type))
+    abort("Attempted to access an undefined <UnitSystem> `type` slot.",
+          "measureR_undefined_UnitType")
+  else
+    x@type
+}
 
 UnitSlots <- c("Weight","Distance","Time","Temperature")
 
@@ -21,51 +27,53 @@ setReplaceMethod("unit",
                  })
 
 
-cast_measure <- function(x, to, no_common_error = FALSE,
-                         non_similar_error = FALSE,
-                         non_identical_error = FALSE, ...) {
-  x_unit <- unit(x)
-  to_unit <- unit(to)
-  #find common UnitTypes
-  to_convert <- units2convert(x, to,
-                              no_common_error = no_common_error,
-                              non_similar_error = non_similar_error,
-                              non_identical_error = non_identical_error)
-  if(length(to_convert)>0){
-    x <- reduce(c(list(x), to_unit[to_convert]), convert)
-  }
-  x
-}
+# cast_measure <- function(x, to, no_common_error = FALSE,
+#                          non_similar_error = FALSE,
+#                          non_identical_error = FALSE, ...) {
+#   x_unit <- unit(x)
+#   to_unit <- unit(to)
+#   #find common UnitTypes
+#   to_convert <- units2convert(x, to,
+#                               no_common_error = no_common_error,
+#                               non_similar_error = non_similar_error,
+#                               non_identical_error = non_identical_error)
+#   if(length(to_convert)>0){
+#     x <- reduce(c(list(x), to_unit[to_convert]), convert)
+#   }
+#   x
+# }
+#
+# units2convert <- function(x, y,
+#                           no_common_error = FALSE,
+#                           non_similar_error = FALSE,
+#                           non_identical_error = FALSE,
+#                           ...) {
+#   x_unit <- unit(x)
+#   y_unit <- unit(y)
+#   common_names <- intersect(names(x_unit), names(y_unit))
+#   if(no_common_error&&length(common_names)==0) incompatible_measures(x, y, requirement = "common", ...)
+#   if(non_similar_error&&!setequal(names(x_unit),names(y_unit))) incompatible_measures(x, y, requirement = "similar", ...)
+#   to_convert <- !map2_lgl(x_unit[common_names], y_unit[common_names], identical)
+#   if(non_identical_error){
+#     #require setequal==TRUE and all elements are identical. i.e. sum(to_convert)==0
+#     if(!setequal(names(x_unit),names(y_unit))||sum(to_convert)>0){
+#       incompatible_measures(x, y, requirement = "identical", ...)
+#     }
+#   }
+#   common_names[to_convert]
+# }
 
-units2convert <- function(x, y,
-                          no_common_error = FALSE,
-                          non_similar_error = FALSE,
-                          non_identical_error = FALSE,
-                          ...) {
-  x_unit <- unit(x)
-  y_unit <- unit(y)
-  common_names <- intersect(names(x_unit), names(y_unit))
-  if(no_common_error&&length(common_names)==0) incompatible_measures(x, y, requirement = "common", ...)
-  if(non_similar_error&&!setequal(names(x_unit),names(y_unit))) incompatible_measures(x, y, requirement = "similar", ...)
-  to_convert <- !map2_lgl(x_unit[common_names], y_unit[common_names], identical)
-  if(non_identical_error){
-    #require setequal==TRUE and all elements are identical. i.e. sum(to_convert)==0
-    if(!setequal(names(x_unit),names(y_unit))||sum(to_convert)>0){
-      incompatible_measures(x, y, requirement = "identical", ...)
-    }
-  }
-  common_names[to_convert]
-}
-
-identical_powers <- function(x,y){
-  x_unit <- unit(x)
-  y_unit <- unit(y)
-  types <- names(x_unit)
-  all(map_dbl(x_unit,p)==map_dbl(y_unit[types], p))
-}
+# identical_powers <- function(x,y){
+#   x_unit <- unit(x)
+#   y_unit <- unit(y)
+#   types <- names(x_unit)
+#   all(map_dbl(x_unit,p)==map_dbl(y_unit[types], p))
+# }
 
 incompatible_measures <- function(x,y, unable = c("convert","combine"),
-                                  requirement = c("identical","similar"), ...){
+                                  requirement = c("identical","similar"),
+                                  x_i = 1L,
+                                  y_i = 2L, ...){
 
   if(length(unable)>1) {
     unable <- unable[1L]
@@ -77,8 +85,8 @@ incompatible_measures <- function(x,y, unable = c("convert","combine"),
   abort(glue("Can't {unable} <Measure {getUnit(x)}> ",
              "to <Measure {getUnit(y)}>.\n",
              "Each <Measure> requires {requirement} Unit Types:\n",
-             "..1 = {paste0(names(x@unit),collapse = ', ')}\n",
-             "..2 = {paste0(names(y@unit),collapse = ', ')}\n"))
+             "..{x_i} = {glue_collapse(names(x@unit), sep = ', ', last = ' and ')}\n",
+             "..{y_i} = {glue_collapse(names(y@unit), sep = ', ', last = ' and ')}\n"), "measureR_incompatible_UnitTypes")
 
 }
 
@@ -98,12 +106,12 @@ metric_scale <- function(prefix){
              0L))
 }
 
-#' @export
-is_active <- function(x) UseMethod("is_active", x)
-is_active.default <- function(x) FALSE
-is_active.UnitSystem <- function(x) x@power!=0&&!is.na(x@.Data)
+# #' @export
+# is_active <- function(x) UseMethod("is_active", x)
+# is_active.default <- function(x) FALSE
+# is_active.UnitSystem <- function(x) x@power!=0&&!is.na(x@.Data)
 
-setMethod("is_active", "UnitSystem", is_active.UnitSystem)
+# setMethod("is_active", "UnitSystem", is_active.UnitSystem)
 
 
 #' @export
@@ -115,7 +123,7 @@ setMethod("getUnit", signature = "UnitSystem",
 setMethod("getUnit", signature = "Measure",
           function(object){
             info <- object@unit
-            if(length(info)==0||sum(map_lgl(info, is_active))==0) return("constant")
+            if(length(info)==0) return("constant") #||sum(map_lgl(info, function(x) x@power))==0
             o_unit <- map_chr(info, function(x){
               paste0(x@.Data,ifelse(abs(x@power)==1, "", paste0("^",abs(x@power))))
             })
@@ -125,13 +133,30 @@ setMethod("getUnit", signature = "Measure",
             paste0(numer_, denom_)
           })
 
-req_all_similar_unit_types <- function(x, y) {
-  if (length(setdiff(names(x@unit), names(y@unit)))>1)
-    stop("All Unit Types on measures are not similar.", call. = F)
-  return(invisible(TRUE))
+# return the uncommon names if they exist
+req_no_uncommon_unit_types <- function(x, y, action, x_i = 1L, y_i = 2L) {
+  uncommon_types <- setdiff(names(x@unit), names(y@unit))
+  if (length(uncommon_types>1))
+    incompatible_measures(x, y, action, requirement = "no uncommon", x_i = x_i, y_i = y_i)
+  return(invisible(uncommon_types))
 }
 
-req_common_unit_types <- function(x, y) {
-  if (length(intersect(names(x@unit), names(y@unit)))==0)
-    stop("Measures do not have any common Unit Types.")
+# return the common types if they exist
+req_common_unit_types <- function(x, y, action, x_i = 1L, y_i = 2L) {
+  common_types <- intersect(names(x@unit), names(y@unit))
+  if (length(common_types)==0)
+    incompatible_measures(x, y, action, requirement = "common", x_i = x_i, y_i = y_i)
+  return(invisible(common_types))
+}
+
+compare_measure_list <- function(x, req_fun, action) {
+
+  len <- length(x)
+  if (len<=1L) abort("Cannot compare list of measures less than length 2.")
+  ind <- seq_len(len - 1L)
+
+  for (i in ind) {
+    req_fun(x = x[[i]], y = x[[i+1L]], action = action, x_i = i, y_i = i + 1L)
+  }
+
 }

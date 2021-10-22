@@ -1,4 +1,4 @@
-#' @include msr-class-UnitSystem.R msr-class-UnitList.R
+#' @include msr-class-UnitSystem-.R msr-class-UnitList.R
 #'
 NULL
 
@@ -11,40 +11,51 @@ setMethod("initialize", "Measure",
             .Object
           })
 
-setClassUnion("NumericMeasure", members = c("Measure","numeric"))
+setClassUnion("NumericMeasure", members = c("Measure","Number"))
 setClassUnion("incompatibleMeasure", members = c("Measure","ANY"))
 
 # verify these methods...
 setMethod("c", "Measure",
           function(x, ..., recursive){
             #All measures need to be identical
-            dots <- map(list(...), cast_measure, to = x, non_similar_error = T)
+            msr_lst <- list(x, ...)
+            len <- length(msr_lst)
+            if(len>1){
+              ind <- seq_len(len)[-1L]
+              for (i in ind) {
+                req_no_uncommon_unit_types(x = msr_lst[[i-1L]], y = msr_lst[[i]], action = "merge", x_i = i - 1L, y_i = i)
+                msr_lst[[i]] <- msr_cast(msr_lst[[i]], msr_lst[[i-1L]])
+              }
+            }
             .data <- unlist(map(c(list(x),dots), function(msr){msr@.Data}))
-            do.call("new", args = c(list("Measure", .Data = .data),x@info))
+            new("Measure", .Data = .data, unit = msr_lst[[1L]]@unit)
           })
 
 setMethod("c", "NumericMeasure",
           function(x, ..., recursive){
             dots <- list(x,...)
             lgl <- map_lgl(dots, is_Measure)
-            mrs_lst <- dots[lgl]
-            if(length(mrs_lst)>1){
-              mrs_ref <- mrs_lst[[1L]]
-              mrs_lst <- mrs_lst[seq(2, length(mrs_lst))]
-              mrs_ele <- map(mrs_lst, cast_measure, to = mrs_ref, non_similar_error = T)
-              mrs_lst <-c(list(mrs_ref), mrs_ele)
+            msr_lst <- dots[lgl]
+            len <- length(msr_lst)
+            if(len>1){
+              ind <- seq_len(len)[-1L]
+              for (i in ind) {
+                req_no_uncommon_unit_types(x = msr_lst[[i-1L]], y = msr_lst[[i]], action = "merge", x_i = i - 1L, y_i = i)
+                msr_lst[[i]] <- msr_cast(msr_lst[[i]], msr_lst[[i-1L]])
+              }
+              dots[lgl] <- mrs_lst
             }
-            dots[lgl] <- mrs_lst
+
             .data <- unlist(map(dots, function(mrs){
               if(is_Measure(mrs)) return(mrs@.Data)
               mrs
             }))
-            do.call("new", args = c(list("Measure", .Data = .data), mrs_lst[[1L]]@info))
+            new("Measure", .Data = .data, unit = msr_lst[[1L]]@unit)
           })
 setMethod("c", "incompatibleMeasure",
           function(x, ..., recursive){
             dots <- list(x, ...)
-            lgl <- map_lgl(dots, is_Measure)
+            lgl <- map_lgl(dots, function(x) is(x, "Measure")|is(x, "Number"))
             msr <- dots[which(lgl)[1L]]
             non <- dots[which(!lgl)[1L]]
             abort(glue("Can't {unable} <{paste0(class(msr), collapse = ', ')}> ",

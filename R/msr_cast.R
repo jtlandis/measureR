@@ -20,17 +20,7 @@ setMethod("msr_cast", signature("Measure", "UnitSystem"),
 setMethod("msr_cast", signature("Measure","Measure"),
           function(object, to) {
 
-            obj_types <- map_chr(object@unit, function(x) x@type)
-            to_types <- map_chr(to@unit, function(x) x@type)
-
-            common_types <- intersect(obj_types, to_types)
-            if (length(common_types)==0) {
-              stop("Cannot cast two measures as there are no common types:\n",
-                   "  ..1 : <",paste0(obj_types, collapse = "/"),">\n",
-                   "  ..2 : <",paste0(to_types, collapse = "/"),">\n"
-              )
-            }
-
+            common_types <- req_common_unit_types(object, to, "convert")
             Reduce(msr_cast, c(list(object), as(to@unit[common_types],"list")))
 
           })

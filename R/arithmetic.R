@@ -1,4 +1,5 @@
-
+#' @include msr-class-Measure.R
+NULL
 
 setMethod("+", signature(e1 = "Measure", e2 = "Measure"),
           function(e1, e2){

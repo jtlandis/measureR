@@ -111,7 +111,7 @@ ysec <- function(x)  {
 }
 #' @export
 Min <- function(x)  {
-  msr_cast(x, new("Second", unit = "min")
+  msr_cast(x, new("Second", unit = "min"))
 }
 #' @export
 Hour <- function(x)  {
@@ -119,5 +119,5 @@ Hour <- function(x)  {
 }
 #' @export
 Day <- function(x)  {
-  msr_cast(x, new("Second", unit = "day")
+  msr_cast(x, new("Second", unit = "day"))
 }
