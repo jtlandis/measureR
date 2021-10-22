@@ -1,4 +1,4 @@
-#' @include msr-class-UnitSystem-Weight.R msr-class-UnitSystem-Distance.R
+#' @include msr-class-UnitSystem-Weight.R msr-class-UnitSystem-Distance.R msr-class-UnitSystem-Time.R
 
 
 
