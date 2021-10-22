@@ -157,7 +157,7 @@ setMethod("/", signature("numeric", "Measure"),
 #
 #           })
 
-setMethod("^", signature("Measure", "numeric"),
+setMethod("^", signature("Measure", "Number"),
           function(e1, e2){
             if(length(e2)!=1) abort("length of exponent must be 1.")
             unit(e1) <- as_UnitList(map2(unit(e1), e2, function(x,y){x@power <- x@power*y; x}))
