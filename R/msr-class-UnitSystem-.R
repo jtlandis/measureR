@@ -40,3 +40,7 @@ UnitSystem <- function(unit = "cnst", power = 0, scale = 1) {
 }
 
 
+setMethod("show", "UnitSystem",
+          function(object) {
+            cat("UnitSystem :", getUnit(object),"\n")
+          })

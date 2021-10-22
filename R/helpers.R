@@ -118,7 +118,11 @@ metric_scale <- function(prefix){
 setGeneric("getUnit", valueClass = "character", function(object) standardGeneric("getUnit"))
 setMethod("getUnit", signature = "UnitSystem",
           function(object){
-            object@.Data
+            unt <- paste0(object@.Data, ifelse(abs(object@power)==1, "", paste0("^",abs(object@power))))
+            if (object@power<0) {
+              unt <- paste0("1/(", unt,")")
+            }
+            unt
           })
 setMethod("getUnit", signature = "Measure",
           function(object){

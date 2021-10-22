@@ -78,21 +78,15 @@ UnitList <- function(...) {
   new("UnitList", ...)
 }
 
-
-# setGeneric("whichUnitSystemClass", valueClass = "character", function(object) standardGeneric("whichUnitSystemClass"))
-# setMethod("whichUnitSystemClass",
-#           signature("UnitList"),
-#           function(object){
-#             map_chr(object, whichUnitSystemClass)
-#           })
-# setMethod("whichUnitSystemClass", signature("Weight"), function(object) "Weight")
-# setMethod("whichUnitSystemClass", signature("Distance"), function(object) "Distance")
-# setMethod("whichUnitSystemClass", signature("Time"), function(object) "Time")
-# setMethod("whichUnitSystemClass", signature("Temperature"), function(object) "Temperature")
-# setMethod("whichUnitSystemClass", signature("UnitSystem"), function(object) "UnitSystem")
-#m <- measure(1:4, new("Gram", unit = "kg"))
-
-
-
-
-
+setMethod("show", "UnitList",
+          function(object) {
+            len <- length(object)
+            cat(sep = "",
+                "** UnitList of length ", len," **\n",
+                "   Unit Types:\n")
+            types <- paste0(format(paste0("    * ",map_chr(object, function(x) {x@type})))," : ")
+            clss <- format(paste0("<",map_chr(object, class),">  "))
+            unts <- format(map_chr(object, getUnit))
+            out <- mapply(paste0, types, clss, unts, USE.NAMES = F, SIMPLIFY = T)
+            cat(out, sep = "\n")
+          })

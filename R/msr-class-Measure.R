@@ -64,10 +64,9 @@ setMethod("c", "incompatibleMeasure",
 setMethod("show", "Measure",
           function(object){
             the_unit <- getUnit(object)
-            cat("measure: ",
+            cat("Measure: ",
                 " ", the_unit, "\n", sep = "")
             print(object@.Data)
-            cat("\n")
           })
 
 #' @export

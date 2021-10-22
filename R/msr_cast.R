@@ -3,7 +3,7 @@
 
 
 setGeneric("msr_cast", valueClass = "Measure", function(object, to) standardGeneric("msr_cast"))
-setMethod("msr_cast", signature("ANY","ANY"), function(object, to) stop("Cannot cast <",paste0(class(object),collapse = "/"),"> to <",paste0(class(to), collapse = "/"),">\n"))
+setMethod("msr_cast", signature("ANY","ANY"), function(object, to) abort(glue("Cannot cast <{paste0(class(object),collapse = '/')}> to <{paste0(class(to), collapse = '/')}>\n")))
 setMethod("msr_cast", signature("Measure", "UnitSystem"),
           function(object, to) {
             type <- verify_type_slot(to)
@@ -80,14 +80,14 @@ setMethod("convert", signature("Number", "Celsius", "Fahrenheit"),
           })
 setMethod("convert", signature("Number", "Fahrenheit", "Celsius"),
           function(x, from, to){
-            ((5/9)*(x^(1/object@power)-32))^object@power
+            ((5/9)*(x^(1/from@power)-32))^from@power
           })
 setMethod("convert", signature("Number", "Fahrenheit", "Kelvin"),
           function(x, from, to){
-            (((5/9)*(x^(1/object@power)-32))+273.16)^object@power
+            (((5/9)*(x^(1/from@power)-32))+273.16)^from@power
           })
 setMethod("convert", signature("Number", "Kelvin", "Fahrenheit"),
           function(x, from, to){
-            (((9/5)*(x^(1/object@power)-273.16))+32)^object@power
+            (((9/5)*(x^(1/from@power)-273.16))+32)^from@power
           })
 
