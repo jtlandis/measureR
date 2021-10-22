@@ -26,50 +26,6 @@ setReplaceMethod("unit",
                    invisible(object)
                  })
 
-
-# cast_measure <- function(x, to, no_common_error = FALSE,
-#                          non_similar_error = FALSE,
-#                          non_identical_error = FALSE, ...) {
-#   x_unit <- unit(x)
-#   to_unit <- unit(to)
-#   #find common UnitTypes
-#   to_convert <- units2convert(x, to,
-#                               no_common_error = no_common_error,
-#                               non_similar_error = non_similar_error,
-#                               non_identical_error = non_identical_error)
-#   if(length(to_convert)>0){
-#     x <- reduce(c(list(x), to_unit[to_convert]), convert)
-#   }
-#   x
-# }
-#
-# units2convert <- function(x, y,
-#                           no_common_error = FALSE,
-#                           non_similar_error = FALSE,
-#                           non_identical_error = FALSE,
-#                           ...) {
-#   x_unit <- unit(x)
-#   y_unit <- unit(y)
-#   common_names <- intersect(names(x_unit), names(y_unit))
-#   if(no_common_error&&length(common_names)==0) incompatible_measures(x, y, requirement = "common", ...)
-#   if(non_similar_error&&!setequal(names(x_unit),names(y_unit))) incompatible_measures(x, y, requirement = "similar", ...)
-#   to_convert <- !map2_lgl(x_unit[common_names], y_unit[common_names], identical)
-#   if(non_identical_error){
-#     #require setequal==TRUE and all elements are identical. i.e. sum(to_convert)==0
-#     if(!setequal(names(x_unit),names(y_unit))||sum(to_convert)>0){
-#       incompatible_measures(x, y, requirement = "identical", ...)
-#     }
-#   }
-#   common_names[to_convert]
-# }
-
-# identical_powers <- function(x,y){
-#   x_unit <- unit(x)
-#   y_unit <- unit(y)
-#   types <- names(x_unit)
-#   all(map_dbl(x_unit,p)==map_dbl(y_unit[types], p))
-# }
-
 incompatible_measures <- function(x,y, unable = c("convert","combine"),
                                   requirement = c("identical","similar"),
                                   x_i = 1L,
@@ -106,12 +62,6 @@ metric_scale <- function(prefix){
              0L))
 }
 
-# #' @export
-# is_active <- function(x) UseMethod("is_active", x)
-# is_active.default <- function(x) FALSE
-# is_active.UnitSystem <- function(x) x@power!=0&&!is.na(x@.Data)
-
-# setMethod("is_active", "UnitSystem", is_active.UnitSystem)
 
 
 #' @export
@@ -164,3 +114,13 @@ compare_measure_list <- function(x, req_fun, action) {
   }
 
 }
+
+
+#' @export
+is_Measure <- function(x) inherits(x, "Measure")
+
+#' @export
+is_UnitSystem <- function(x) inherits(x, "UnitSystem")
+
+#' @export
+is_UnitList <- function(x) inherits(x, "UnitList")
