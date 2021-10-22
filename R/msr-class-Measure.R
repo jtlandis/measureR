@@ -27,7 +27,7 @@ setMethod("c", "Measure",
                 msr_lst[[i]] <- msr_cast(msr_lst[[i]], msr_lst[[i-1L]])
               }
             }
-            .data <- unlist(map(c(list(x),dots), function(msr){msr@.Data}))
+            .data <- unlist(map(msr_lst, function(msr){msr@.Data}))
             new("Measure", .Data = .data, unit = msr_lst[[1L]]@unit)
           })
 
